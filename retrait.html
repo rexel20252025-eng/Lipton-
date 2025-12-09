@@ -431,7 +431,7 @@
         </div>
     </div>
 
-   <script type="module">
+  <script type="module">
 // Import des modules Firebase nécessaires
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
@@ -468,6 +468,7 @@ const MAX_WITHDRAWAL = 850000;
 let currentBalance = 0;
 let currentUser = null;
 let userWithdrawalConfig = null;
+let hasPending = false;
 
 // --- Fonctions utilitaires ---
 function formatAmount(amount) {
@@ -478,6 +479,29 @@ function showMessage(message, isError = true) {
     const messageElement = document.getElementById('message');
     if (messageElement) {
         messageElement.innerHTML = `<div class="${isError ? 'error' : 'success'}">${message}</div>`;
+    }
+}
+
+// --- Vérifier s'il y a un retrait en cours ---
+async function checkPendingWithdrawal(userId) {
+    try {
+        const historyRef = ref(database, `users/${userId}/withdrawalHistory`);
+        const snapshot = await get(historyRef);
+        if (snapshot.exists()) {
+            const withdrawals = snapshot.val();
+            for (const key in withdrawals) {
+                if (withdrawals[key].status === 'Traitement Bancaire') {
+                    hasPending = true;
+                    return true;
+                }
+            }
+        }
+        hasPending = false;
+        return false;
+    } catch (error) {
+        console.error("Erreur lors de la vérification des retraits en cours:", error);
+        hasPending = false;
+        return false;
     }
 }
 
@@ -498,6 +522,10 @@ async function loadUserData(userId) {
             const balanceElement = document.getElementById('current-balance');
             if (balanceElement) balanceElement.textContent = formatAmount(currentBalance);
         }
+
+        // Vérifier si retrait en cours
+        await checkPendingWithdrawal(userId);
+        updateWithdrawalSummary();
     } catch (error) {
         console.error("Erreur lors du chargement des données:", error);
         showMessage("Erreur lors du chargement des données");
@@ -513,6 +541,11 @@ function validateWithdrawalCode(inputCode) {
 async function processWithdrawal() {
     if (!currentUser) {
         showMessage("Veuillez vous connecter");
+        return;
+    }
+
+    if (hasPending) {
+        showMessage("Vous avez déjà un retrait en cours. Veuillez attendre qu'il soit traité.");
         return;
     }
 
@@ -556,6 +589,9 @@ async function processWithdrawal() {
         await update(ref(database), updates);
 
         showMessage("Retrait lancé avec succès !", false);
+        hasPending = true; // Bloquer les futurs retraits
+        updateWithdrawalSummary();
+
         setTimeout(() => {
             window.location.href = 'historique-retrait.html';
         }, 1500);
@@ -577,7 +613,7 @@ function updateWithdrawalSummary() {
     const isBalanceSufficient = amount <= currentBalance;
     const isCodeProvided = !!withdrawalCode;
 
-    if (withdrawalButton) withdrawalButton.disabled = !(isAmountValid && isBalanceSufficient && isCodeProvided);
+    if (withdrawalButton) withdrawalButton.disabled = !(isAmountValid && isBalanceSufficient && isCodeProvided && !hasPending);
 
     if (amount > 0) {
         const fees = Math.round(amount * 0.01);
@@ -594,6 +630,10 @@ function updateWithdrawalSummary() {
         if (withdrawalSummary) withdrawalSummary.classList.add('visible');
     } else {
         if (withdrawalSummary) withdrawalSummary.classList.remove('visible');
+    }
+
+    if (hasPending && withdrawalButton) {
+        showMessage("Vous avez déjà un retrait en cours. Vous ne pouvez pas en lancer un nouveau.", true);
     }
 }
 
