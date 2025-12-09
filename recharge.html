@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recharge de Crédit</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+:root {
+    --primary-color: #4a7bff;
+    --secondary-color: #ff1f00;
+    --background-color: #f8f9fa;
+    --text-color: #2f3640;
+    --input-background: #ffffff;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to bottom, #ffffff, #e6f0ff);
+    color: var(--text-color);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+/* Titre */
+h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 40px;
+    position: relative;
+}
+
+h1::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    margin: 10px auto 0 auto;
+    border-radius: 2px;
+}
+
+/* Opérateurs */
+.operator-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.operator-option {
+    flex: 1 1 30%;
+    text-align: center;
+}
+
+.operator-option input[type="radio"] {
+    display: none;
+}
+
+.operator-logo {
+    background-color: var(--input-background);
+    border-radius: 15px;
+    padding: 20px 10px;
+    font-weight: 600;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.operator-option input[type="radio"]:checked + .operator-logo {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(74,123,255,0.2);
+}
+
+/* Formulaire */
+form {
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    position: relative;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 2px solid #d1d8e0;
+    border-radius: 12px;
+    font-size: 1rem;
+    background-color: var(--input-background);
+    transition: all 0.3s ease;
+}
+
+.input-wrapper input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(74,123,255,0.2);
+}
+
+.icon-wrapper {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-color);
+    font-size: 1rem;
+}
+
+/* Montants rapides */
+.quick-amount-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.quick-amount-btn {
+    flex: 1 1 30%;
+    background-color: var(--input-background);
+    border-radius: 12px;
+    padding: 10px 0;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.quick-amount-btn.selected, .quick-amount-btn:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(74,123,255,0.1);
+    box-shadow: 0 6px 12px rgba(74,123,255,0.15);
+}
+
+/* Bouton principal */
+button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 6px 12px rgba(74,123,255,0.2);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(74,123,255,0.3);
+}
+
+/* Erreurs */
+.error {
+    color: #ff4757;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.help-text {
+    font-size: 0.8rem;
+    color: #636e72;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.help-text i {
+    margin-right: 5px;
+    color: var(--primary-color);
+}
+
+/* Loading */
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid rgba(0,0,0,0.1);
+    border-top: 6px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .operator-option {
+        flex: 1 1 45%;
+    }
+    .quick-amount-btn {
+        flex: 1 1 45%;
+    }
+}
+</style>
+</head>
+<body>
+
+<h1>ℝ𝔼ℂℍ𝔸ℝ𝔾𝔼</h1>
+
+<div class="operator-grid">
+    <label class="operator-option">
+        <input type="radio" name="operator" value="mtn" required>
+        <div class="operator-logo">𝕄𝕋ℕ</div>
+    </label>
+    <label class="operator-option">
+        <input type="radio" name="operator" value="moov" required>
+        <div class="operator-logo">𝕄𝕆𝕆𝕍</div>
+    </label>
+    <label class="operator-option">
+        <input type="radio" name="operator" value="orange" required>
+        <div class="operator-logo">𝕆ℝ𝔸ℕ𝔾𝔼</div>
+    </label>
+    <label class="operator-option">
+        <input type="radio" name="operator" value="wave" required>
+        <div class="operator-logo">𝕎𝔸𝕍𝔼</div>
+    </label>
+    <label class="operator-option">
+        <input type="radio" name="operator" value="usdt" required>
+        <div class="operator-logo">𝕌𝕊𝔻𝕋 𝕋ℝ𝕆ℕ 20</div>
+    </label>
+</div>
+
+<form id="rechargeForm">
+    <div class="form-group">
+        <label for="phone"><i class="fas fa-mobile-alt"></i> Numéro de recharge</label>
+        <div class="input-wrapper">
+            <i class="fas fa-phone icon-wrapper"></i>
+            <input type="tel" id="phone" name="phone" placeholder="Entrez votre numéro" required>
+        </div>
+        <div class="help-text"><i class="fas fa-info-circle"></i> Entrez un numéro valide</div>
+        <div id="phoneError" class="error"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="amount"><i class="fas fa-money-bill-wave"></i> Montant de recharge</label>
+        <div class="quick-amount-grid">
+            <div class="quick-amount-btn" data-amount="5500">5 500 FCFA</div>
+            <div class="quick-amount-btn" data-amount="10500">10 500 FCFA</div>
+            <div class="quick-amount-btn" data-amount="20500">20 500 FCFA</div>
+            <div class="quick-amount-btn" data-amount="50000">50 000 FCFA</div>
+            <div class="quick-amount-btn" data-amount="100000">100 000 FCFA</div>
+            <div class="quick-amount-btn" data-amount="200000">200 000 FCFA</div>
+        </div>
+        <div class="input-wrapper">
+            <i class="fas fa-dollar-sign icon-wrapper"></i>
+            <input type="number" id="amount" name="amount" placeholder="Montant personnalisé" required>
+        </div>
+        <div class="help-text"><i class="fas fa-info-circle"></i> Montant minimum : 1 FCFA ou 1 USDT Tron 20</div>
+        <div id="amountError" class="error"></div>
+    </div>
+
+    <button type="submit"><i class="fas fa-arrow-right"></i> Continuer vers le paiement</button>
+</form>
+
+<div class="loading">
+    <div class="loading-spinner"></div>
+</div>
+
+ <script type="module">
+// Import des modules Firebase nécessaires
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+// Configuration Firebase Lipton
+const firebaseConfig = {
+    apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
+    authDomain: "lipton-4f24a.firebaseapp.com",
+    databaseURL: "https://lipton-4f24a-default-rtdb.firebaseio.com",
+    projectId: "lipton-4f24a",
+    storageBucket: "lipton-4f24a.firebasestorage.app",
+    messagingSenderId: "1041905353994",
+    appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
+};
+
+// Initialisation Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Sélection des éléments
+    const form = document.getElementById('rechargeForm');
+    const phoneInput = document.getElementById('phone');
+    const amountInput = document.getElementById('amount');
+    const phoneError = document.getElementById('phoneError');
+    const amountError = document.getElementById('amountError');
+    const operatorOptions = document.querySelectorAll('.operator-option');
+    const quickAmountBtns = document.querySelectorAll('.quick-amount-btn');
+    const loading = document.querySelector('.loading');
+    const notification = document.getElementById('notification');
+
+    const operatorNumbers = {
+        'mtn': '+2250554049897',
+        'moov': 'indisponible',
+        'orange': '+2250700258398',
+        'wave': '+2250554049897',
+        'usdt': 'TArN5XsrxyhtuzxwKQiWNTBsmMm9Brkim9'
+    };
+
+    // --- Fonctions utilitaires ---
+    const showLoading = () => { if (loading) loading.style.display = 'flex'; };
+    const hideLoading = () => { if (loading) loading.style.display = 'none'; };
+    const showNotification = (msg, type = 'success') => {
+        if (!notification) return;
+        notification.textContent = msg;
+        notification.className = `notification ${type}`;
+        notification.style.display = 'block';
+        setTimeout(() => notification.style.display = 'none', 5000);
+    };
+    const showError = (element, msg) => {
+        const el = document.getElementById(element);
+        if (el) {
+            el.textContent = msg;
+            el.style.opacity = '1';
+        }
+    };
+    const clearErrors = () => {
+        if (phoneError) { phoneError.textContent = ''; phoneError.style.opacity = '0'; }
+        if (amountError) { amountError.textContent = ''; amountError.style.opacity = '0'; }
+    };
+
+    const validateForm = (operator, phone, amount) => {
+        clearErrors();
+        let isValid = true;
+
+        if (!operator) { showError('operatorError', 'Veuillez sélectionner un opérateur'); isValid = false; }
+        if (amount < 100) { showError('amountError', 'Le montant minimum est de 100 FCFA'); isValid = false; }
+
+        return isValid;
+    };
+
+    // --- Effets et interactions ---
+    operatorOptions.forEach(option => {
+        option.addEventListener('change', function() {
+            operatorOptions.forEach(opt => {
+                const logo = opt.querySelector('.operator-logo');
+                if (logo) logo.style.transform = 'scale(1)';
+            });
+            const logo = this.querySelector('.operator-logo');
+            if (logo) logo.style.transform = 'scale(1.05)';
+        });
+    });
+
+    quickAmountBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            quickAmountBtns.forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            if (amountInput) amountInput.value = btn.getAttribute('data-amount');
+        });
+    });
+
+    if (amountInput) amountInput.addEventListener('input', () => quickAmountBtns.forEach(btn => btn.classList.remove('selected')));
+
+    if (phoneInput) phoneInput.addEventListener('input', () => { phoneError.textContent = ''; phoneError.style.opacity = '0'; });
+    if (amountInput) amountInput.addEventListener('input', function() {
+        const amount = parseInt(this.value) || 0;
+        if (amount < 100) showError('amountError', 'Le montant minimum est de 100 FCFA');
+        else { amountError.textContent = ''; amountError.style.opacity = '0'; }
+    });
+
+    // --- Vérification utilisateur ---
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            showNotification('Veuillez vous connecter pour continuer', 'error-notification');
+            setTimeout(() => window.location.href = 'login.html', 2000);
+        }
+    });
+
+    // --- Soumission du formulaire ---
+    if (form) form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const user = auth.currentUser;
+        if (!user) { showNotification('Veuillez vous connecter pour continuer', 'error-notification'); return; }
+
+        const operator = document.querySelector('input[name="operator"]:checked')?.value;
+        const phone = phoneInput?.value;
+        const amount = parseInt(amountInput?.value) || 0;
+
+        if (!validateForm(operator, phone, amount)) return;
+
+        showLoading();
+
+        try {
+            const rechargeData = {
+                operator,
+                phone,
+                amount,
+                operatorNumber: operatorNumbers[operator] || 'N/A',
+                date: new Date().toISOString(),
+                userId: user.uid,
+                userEmail: user.email,
+                status: 'pending'
+            };
+
+            sessionStorage.setItem('rechargeData', JSON.stringify(rechargeData));
+
+            const rechargeRef = ref(db, `recharges/${user.uid}/${Date.now()}`);
+            await set(rechargeRef, rechargeData);
+
+            window.location.href = 'confirmation.html';
+        } catch (error) {
+            console.error('Erreur:', error);
+            showNotification('Une erreur est survenue. Veuillez réessayer.', 'error-notification');
+        } finally {
+            hideLoading();
+        }
+    });
+});
+</script>
+
+</body>
+</html>

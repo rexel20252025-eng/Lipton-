@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes Maisons</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== BODY ===== */
+body {
+    background: #ffffff; /* fond blanc */
+    padding: 16px;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* ===== HEADER ===== */
+.header {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e1e1e;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* ===== STATS ===== */
+.stats-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: #f8f8f8;
+    padding: 16px;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* ===== VIP CARDS ===== */
+.vip-card {
+    background: #ffffff;
+    border-radius: 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.vip-card:hover {
+    transform: translateY(-3px);
+}
+
+.vip-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: #e0f7fa;
+}
+
+.vip-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.vip-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #00796b;
+}
+
+.vip-subtitle {
+    font-size: 14px;
+    color: #004d40;
+}
+
+/* Détails VIP */
+.vip-details {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #444;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+/* Barre de progression */
+.progress-container {
+    padding: 12px 16px 16px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: #00796b;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #c8e6c9;
+    border-radius: 6px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #00796b;
+    border-radius: 6px;
+    transition: width 0.3s ease;
+}
+
+/* Boutons de collecte */
+.collect-btn {
+    display: block;
+    width: calc(100% - 32px);
+    margin: 12px 16px 16px;
+    padding: 12px;
+    background: #00796b;
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.collect-btn:hover:not(:disabled) {
+    background: #004d40;
+    transform: translateY(-2px);
+}
+
+.collect-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 28px;
+    border-radius: 10px;
+    color: #ffffff;
+    font-weight: 500;
+    display: none;
+    z-index: 1000;
+    font-size: 14px;
+}
+
+.notification.success { background: #27ae60; }
+.notification.error { background: #e74c3c; }
+
+/* ===== NAVIGATION ===== */
+.navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    display: flex;
+    max-width: 480px;
+    margin: 0 auto;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-item {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-item.active {
+    color: #0066ff;
+}
+
+.nav-icon i {
+    font-size: 20px;
+    display: block;
+}
+</style>
+</head>
+<body>
+
+<div class="header">Centre des revenus</div>
+
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="stat-label">Total des boissons</div>
+        <div class="stat-value" id="total-vips">0</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label">Bénéfice gagné</div>
+        <div class="stat-value" id="total-revenue">0 XOF</div>
+    </div>
+</div>
+
+<div id="vips-container">
+    <!-- Les VIP seront injectés ici -->
+</div>
+
+<div class="notification"></div>
+
+<!-- Navigation -->
+<div class="navigation">
+    <a href="accueil.html" class="nav-item active">
+        <div class="nav-icon"><i class="fas fa-home"></i></div>
+        Accueil
+    </a>
+    <a href="machine.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-ship"></i></div>
+        Mes achats
+    </a>
+    <a href="investir.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-coins"></i></div>
+        Investir
+    </a>
+    <a href="solde.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-user"></i></div>
+        Compte
+    </a>
+</div>
+
+<script type="module">
+// --- Import Firebase ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+// --- Configuration VIP ---
+const VIP_CONFIG = {
+    1: { nom: "LIPTON 1", dailyRevenue: 1100, cycleDuration: 20, totalRevenue: 22000, price: 5500, limit: 1, image: "https://image.noelshack.com/fichiers/2025/50/2/1765252652-images-3.jpeg" },
+    2: { nom: "LIPTON 2", dailyRevenue: 2730, cycleDuration: 19, totalRevenue: 51870, price: 10500, limit: 1, image: "https://image.noelshack.com/fichiers/2025/50/2/1765252652-images-3.jpeg" },
+    3: { nom: "LIPTON 3", dailyRevenue: 5330, cycleDuration: 18, totalRevenue: 95949, price: 20500, limit: 1, image: "https://image.noelshack.com/fichiers/2025/50/2/1765252652-images-3.jpeg" },
+    4: { nom: "LIPTON 4", dailyRevenue: 12000, cycleDuration: 12, totalRevenue: 144000, price: 50000, limit: 2, image: "https://image.noelshack.com/fichiers/2025/50/2/1765252652-images-3.jpeg" },
+    5: { nom: "Lipton 5", dailyRevenue: 26000, cycleDuration: 15, totalRevenue: 390000, price: 100000, limit: 1, image: "https://image.noelshack.com/fichiers/2025/50/2/1765252652-images-3.jpeg" },
+    6: { nom: "LIPTON 6", dailyRevenue: 55000, cycleDuration: 10, totalRevenue: 550000, price: 200000, limit: 4, image: "https://image.noelshack.com/fichiers/2025/50/2/1765252652-images-3.jpeg" },
+    7: { nom: "Msc-bugatti", dailyRevenue: 25000, cycleDuration: 62, totalRevenue: 1550000, price: 1000000, limit: 4, image: "https://image.noelshack.com/fichiers/2025/13/7/1743360963-img-20250329-wa0021.jpg" }
+};
+
+// --- Configuration Firebase ---
+const firebaseConfig = {
+    apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
+    authDomain: "lipton-4f24a.firebaseapp.com",
+    databaseURL: "https://lipton-4f24a-default-rtdb.firebaseio.com",
+    projectId: "lipton-4f24a",
+    storageBucket: "lipton-4f24a.firebasestorage.app",
+    messagingSenderId: "1041905353994",
+    appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
+};
+
+// --- Initialisation Firebase ---
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let currentUser = null;
+
+// --- Fonctions utilitaires ---
+function showNotification(message, type = 'success') {
+    const notification = document.querySelector('.notification');
+    if (!notification) return;
+    notification.textContent = message;
+    notification.className = `notification ${type}`;
+    notification.style.display = 'block';
+    setTimeout(() => notification.style.display = 'none', 3000);
+}
+
+function calculateCycleProgress(investment) {
+    const config = VIP_CONFIG[investment.productId];
+    if (!config) return { isComplete: true, progress: 100, remainingDays: 0 };
+
+    const totalCollected = investment.totalCollected || 0;
+    const progress = (totalCollected / config.totalRevenue) * 100;
+    const daysInCycle = Math.floor((Date.now() - investment.timestamp) / (1000 * 60 * 60 * 24));
+    const remainingDays = Math.max(0, config.cycleDuration - daysInCycle);
+
+    return {
+        isComplete: totalCollected >= config.totalRevenue,
+        progress: Math.min(progress, 100),
+        remainingDays
+    };
+}
+
+function isReadyToCollect(investment) {
+    const lastCollection = investment.lastCollection || 0;
+    const now = new Date();
+    const lastCollectionDate = new Date(lastCollection);
+    return lastCollectionDate.getDate() !== now.getDate() ||
+           lastCollectionDate.getMonth() !== now.getMonth() ||
+           lastCollectionDate.getFullYear() !== now.getFullYear();
+}
+
+// --- Charger VIPs ---
+async function loadVIPs() {
+    if (!currentUser) return;
+
+    try {
+        const snapshot = await get(ref(db, `investments/${currentUser.uid}`));
+        const container = document.getElementById('vips-container');
+        if (!container) return;
+
+        if (!snapshot.exists()) {
+            container.innerHTML = `
+                <div style="text-align:center;padding:20px;background:#f0f0f0;border-radius:12px;">
+                    <h2>Pas de distribution des boissons 😓</h2>
+                    <p>Investissez dans une boisson pour commencer à gagner des revenus.</p>
+                </div>
+            `;
+            updateStats([]);
+            return;
+        }
+
+        const investments = [];
+        snapshot.forEach(child => {
+            const investment = { id: child.key, ...child.val() };
+            if (investment.status === 'active') investments.push(investment);
+        });
+
+        updateStats(investments);
+        renderVIPs(investments);
+    } catch (error) {
+        console.error("Erreur lors du chargement des VIP:", error);
+        showNotification("Erreur lors du chargement des VIP", "error");
+    }
+}
+
+function updateStats(investments) {
+    const totalVips = investments.length;
+    const totalRevenue = investments.reduce((sum, inv) => sum + (inv.totalCollected || 0), 0);
+    const totalVipsEl = document.getElementById('total-vips');
+    const totalRevenueEl = document.getElementById('total-revenue');
+
+    if (totalVipsEl) totalVipsEl.textContent = totalVips;
+    if (totalRevenueEl) totalRevenueEl.textContent = totalRevenue.toLocaleString() + ' XOF';
+}
+
+function renderVIPs(investments) {
+    const container = document.getElementById('vips-container');
+    if (!container) return;
+
+    container.innerHTML = investments.map(inv => {
+        const config = VIP_CONFIG[inv.productId];
+        const { isComplete, progress, remainingDays } = calculateCycleProgress(inv);
+        const canCollect = !isComplete && isReadyToCollect(inv);
+
+        return `
+        <div class="vip-card">
+            <div class="vip-header">
+                <div class="vip-logo" style="background-image: url('${config.image}');"></div>
+                <div>
+                    <div class="vip-title">${config.nom}</div>
+                    <div class="vip-subtitle">${config.dailyRevenue.toLocaleString()} XOF / jour</div>
+                </div>
+            </div>
+            <div class="vip-details">
+                <div>Date d'investissement</div>
+                <div>${new Date(inv.timestamp).toLocaleDateString()}</div>
+            </div>
+            <div class="vip-details">
+                <div>Cycle restant</div>
+                <div>${remainingDays} jours</div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-header"><span>Total collecté</span><span>${(inv.totalCollected||0).toLocaleString()} / ${config.totalRevenue.toLocaleString()} XOF</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+            </div>
+            <button class="collect-btn" onclick="window.collectRevenue('${inv.id}')" ${(!canCollect || isComplete)?'disabled':''}>
+                ${isComplete?'Cycle terminé':(canCollect?'Réclamer les gains':'Déjà réclamé aujourd\'hui')}
+            </button>
+        </div>
+        `;
+    }).join('');
+}
+
+// --- Collecte des revenus ---
+window.collectRevenue = async function(investmentId) {
+    if (!currentUser) return;
+
+    try {
+        const investmentRef = ref(db, `investments/${currentUser.uid}/${investmentId}`);
+        const userRef = ref(db, `users/${currentUser.uid}`);
+
+        const [invSnap, userSnap] = await Promise.all([get(investmentRef), get(userRef)]);
+        if (!invSnap.exists() || !userSnap.exists()) throw new Error("Données non trouvées");
+
+        const investment = invSnap.val();
+        const user = userSnap.val();
+        const config = VIP_CONFIG[investment.productId];
+        if (!config) throw new Error("Configuration du VIP non trouvée");
+
+        const { isComplete } = calculateCycleProgress(investment);
+        if (isComplete) throw new Error("Ce VIP a terminé son cycle");
+        if (!isReadyToCollect(investment)) throw new Error("Vous avez déjà réclamé aujourd'hui");
+
+        const newTotal = (investment.totalCollected || 0) + config.dailyRevenue;
+        if (newTotal > config.totalRevenue) throw new Error("Le cycle de ce VIP est terminé");
+
+        const updates = {
+            [`users/${currentUser.uid}/balance`]: (user.balance || 0) + config.dailyRevenue,
+            [`investments/${currentUser.uid}/${investmentId}/lastCollection`]: Date.now(),
+            [`investments/${currentUser.uid}/${investmentId}/totalCollected`]: newTotal
+        };
+
+        await update(ref(db), updates);
+        showNotification(`Vous avez collecté ${config.dailyRevenue.toLocaleString()} XOF !`, "success");
+        loadVIPs();
+    } catch (error) {
+        console.error("Erreur lors de la collecte:", error);
+        showNotification(error.message || "Erreur lors de la collecte des revenus", "error");
+    }
+};
+
+// --- Authentification ---
+onAuthStateChanged(auth, user => {
+    if (user) {
+        currentUser = user;
+        loadVIPs();
+        onValue(ref(db, `investments/${user.uid}`), () => loadVIPs());
+    } else {
+        window.location.href = 'login.html';
+    }
+});
+
+// --- Erreurs globales ---
+window.addEventListener('error', e => {
+    console.error('Erreur globale:', e);
+    showNotification('Une erreur inattendue est survenue', 'error');
+});
+</script>
+
+</body>
+</html>

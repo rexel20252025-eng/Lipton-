@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - Investissements Maritimes</title>
+    <!-- Ajout de Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #4d4747;
+            margin: 0 auto;
+            max-width: 480px;
+            color: #1a1a1a;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Carrousel */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .carousel {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            width: 33.333%;
+            height: 100%;
+            position: relative;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            color: white;
+        }
+
+        .carousel-overlay h2 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .carousel-overlay p {
+            font-size: 14px;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .dot.active {
+            background-color: white;
+        }
+
+        /* Sections principales */
+        .section-header {
+            padding: 15px 15px 5px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-container {
+            padding: 10px 15px;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .main-card-image {
+            height: 130px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .main-card-content {
+            padding: 15px;
+        }
+
+        .main-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .main-card-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .main-card-price {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0066ff;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #0066ff;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Navigation */
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            max-width: 480px;
+            margin: 0 auto;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active {
+            color: #0066ff;
+        }
+
+        .nav-icon {
+            margin-bottom: 4px;
+        }
+
+        /* Ajout pour les icônes Font Awesome */
+        .nav-icon i {
+            font-size: 20px;
+            display: block;
+        }
+
+        /* Bouton principal */
+        .primary-button {
+            display: block;
+            background: linear-gradient(to right, #3b82f6, #2563eb);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            margin: 15px;
+        }
+
+        /* Espace pour éviter que le contenu ne soit caché derrière la navigation */
+        .spacer {
+            height: 70px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Carrousel d'images -->
+    <div class="carousel-container">
+        <div class="carousel">
+            <div class="carousel-slide">
+                <img src="https://image.noelshack.com/fichiers/2025/50/2/1765252439-images-1.jpeg" alt="Croisière de luxe">
+                <div class="carousel-overlay">
+                    <h2>DISTRIBUTION DES BOISSONS LIPTON
+
+</h2>
+                    <p> </p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://image.noelshack.com/fichiers/2025/50/2/1765252595-images-2.jpeg" alt="Yacht de luxe">
+                <div class="carousel-overlay">
+                    <h2>DISTRIBUTION DES BOISSONS LIPTON</h2>
+                    <p></p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://image.noelshack.com/fichiers/2025/50/2/1765252652-images-3.jpeg" alt="MSC Bugatti">
+                <div class="carousel-overlay">
+                    <h2></h2>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-value">+100%</div>
+            <div class="stat-label">Graphique</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value">4 500</div>
+            <div class="stat-label">Investisseurs actifs</div>
+        </div>
+    </div>
+
+    <!-- Opportunités d'investissement -->
+    <div class="section-header">DISTRIBUTION DES BOISSONS LIPTON </div>
+    <div class="card-container">
+        <div class="main-card">
+            <div class="main-card-image" style="background-image: url('https://image.noelshack.com/fichiers/2025/50/2/1765252439-images-1.jpeg');"></div>
+            <div class="main-card-content">
+                <div class="main-card-title">LIPTON 1: 5 500 FCFA</div>
+                <div class="main-card-desc">Rendement de 1 080 FCFA quotidien pendant 22 jours</div>
+                <div class="main-card-price"> revenus total:--> 23 760 FCFA</div>
+            </div>
+        </div>
+        
+        <div class="main-card">
+            <div class="main-card-image" style="background-image: url('https://image.noelshack.com/fichiers/2025/50/2/1765252652-images-3.jpeg');"></div>
+            <div class="main-card-content">
+                <div class="main-card-title">LIPTON 2: 10 500 FCFA </div>
+                <div class="main-card-desc">Rendement de 2 500 FCFA quotidien pendant 18 jours</div>
+                <div class="main-card-price">Revenus total:--> 45 000 FCFA</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bouton principal -->
+    <a href="investir.html" class="primary-button">Découvrir tous les investissements</a>
+
+    <!-- Espace pour que le contenu ne soit pas caché par la navigation -->
+    <div class="spacer"></div>
+
+    <!-- Navigation avec icônes Font Awesome -->
+    <div class="navigation">
+        <a href="accueil.html" class="nav-item active">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
+            <div>Accueil</div>
+        </a>
+        <a href="machine.html" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-ship"></i></div>
+            <div>Mes achats</div>
+        </a>
+        <a href="investir.html" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-coins"></i></div>
+            <div>Investir</div>
+        </a>
+        <a href="solde.html" class="nav-item">
+            <div class="nav-icon"><i class="fas fa-user"></i></div>
+            <div>compte</div>
+        </a>
+    </div>
+
+    <script>
+        // Script pour le carrousel
+        let currentSlide = 0;
+        const carousel = document.querySelector('.carousel');
+        const dots = document.querySelectorAll('.dot');
+        const slideCount = document.querySelectorAll('.carousel-slide').length;
+
+        // Fonction pour changer de slide
+        function goToSlide(n) {
+            carousel.style.transform = `translateX(-${n * 33.333}%)`;
+            currentSlide = n;
+            
+            // Mise à jour des points indicateurs
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === n);
+            });
+        }
+
+        // Fonction pour passer à la slide suivante
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slideCount;
+            goToSlide(currentSlide);
+        }
+
+        // Configuration du carrousel automatique
+        let slideInterval = setInterval(nextSlide, 5000);
+
+        // Permettre de cliquer sur les points pour naviguer
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                clearInterval(slideInterval); // Arrêter le défilement automatique
+                goToSlide(i);
+                slideInterval = setInterval(nextSlide, 5000); // Redémarrer le défilement
+            });
+        });
+
+        // Initialisation Firebase
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ici, vous pouvez ajouter du code pour vérifier l'authentification
+            // et rediriger l'utilisateur si nécessaire
+        });
+    </script>
+</body>
+</html>

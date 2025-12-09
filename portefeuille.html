@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #000000;
+            --accent-color: #000000;
+            --success-color: #000000;
+            --error-color: #000000;
+            --background-color: #000000;
+            --card-background: #bcbcbc;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: var(--background-color);
+            color: var(--secondary-color);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 100%;
+            min-height: 100vh;
+            background: var(--card-background);
+        }
+
+        .header {
+            background: var(--secondary-color);
+            color: white;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header h1 {
+            flex-grow: 1;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 1.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .field {
+            margin-bottom: 2rem;
+        }
+
+        .field-label {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            margin-top: 0.5rem;
+            transition: var(--transition);
+            background: #f9fafb;
+        }
+
+        .field-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(84, 105, 212, 0.1);
+            background: white;
+        }
+
+        .type-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            background: #f9fafb;
+            transition: var(--transition);
+        }
+
+        .type-selector:hover {
+            border-color: var(--primary-color);
+            background: white;
+        }
+
+        .type-selector::after {
+            content: "›";
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: bold;
+            transform: rotate(90deg);
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            background: var(--card-background);
+            border-radius: 20px 20px 0 0;
+            transition: var(--transition);
+            z-index: 1000;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .bottom-sheet.active {
+            bottom: 0;
+        }
+
+        .sheet-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.25rem;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f8fafc;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .sheet-title {
+            color: var(--secondary-color);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .sheet-options {
+            padding: 0.5rem 0;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .option {
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin: 0.25rem 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        .option:hover {
+            background-color: #f1f5f9;
+        }
+
+        .option.selected {
+            color: var(--primary-color);
+            font-weight: 500;
+            background-color: #eef2ff;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border: none;
+            background: none;
+            color: var(--primary-color);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background: #eef2ff;
+        }
+
+        .notice {
+            padding: 1.25rem;
+            background: #f8fafc;
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+            color: #64748b;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            border: 1px solid #e2e8f0;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: var(--transition);
+            box-shadow: var(--box-shadow);
+        }
+
+        .submit-button:hover {
+            background: var(--accent-color);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 8px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .message-success {
+            background: var(--success-color);
+            color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            box-shadow: var(--box-shadow);
+        }
+
+        .message-error {
+            background: var(--error-color);
+            color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            box-shadow: var(--box-shadow);
+        }
+
+        .animate__animated {
+            animation-duration: 0.5s;
+        }
+
+        .animate__fadeIn {
+            animation-name: fadeIn;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .content {
+                padding: 1rem;
+            }
+
+            .field {
+                margin-bottom: 1.5rem;
+            }
+
+            .sheet-options {
+                max-height: 50vh;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #1a1f36;
+                --card-background: #242b42;
+                --secondary-color: #e2e8f0;
+            }
+
+            .field-input, 
+            .type-selector {
+                background: #2a3149;
+                border-color: #374151;
+                color: white;
+            }
+
+            .notice,
+            .sheet-header {
+                background: #2a3149;
+                border-color: #374151;
+            }
+
+            .option:hover {
+                background-color: #374151;
+            }
+
+            .option.selected {
+                background-color: #3f4b73;
+            }
+        }
+        
+       /* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    background-color: rgba(0,0,0,0.9); /* Arrière-plan noir */
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ffffff; /* Texte blanc */
+    background-color: #000000; /* Arrière-plan du bouton noir */
+    cursor: pointer;
+    /* Pas de padding supplémentaire pour conserver la taille originale */
+}
+
+.nav-item.active {
+    color: #ff1f00; /* La couleur de l'élément actif reste rouge */
+}
+
+.nav-icon {
+    margin-bottom: 5px;
+    stroke: currentColor;
+}
+
+.nav-label {
+    font-size: 12px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Logout Style */
+.deconnexion-item {
+    color: #ff4d4d !important;
+}
+
+.deconnexion-item .quick-action-content svg {
+    stroke: #ff4d4d;
+}
+ </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="btn" onclick="history.back()">‹</button>
+            <h1>Compte de retrait</h1>
+        </div>
+
+        <div class="content">
+            <div id="message"></div>
+
+            <div class="field">
+                <div class="field-label">Nom du propriétaire</div>
+                <input type="text" class="field-input" placeholder="Entrez le nom du propriétaire" id="ownerName">
+            </div>
+
+            <div class="field">
+                <div class="field-label">Numéro de compte</div>
+                <input type="tel" class="field-input" placeholder="ex:229-225-226-221-228-223" id="phone">
+            </div>
+
+            <div class="field">
+                <div class="field-label">Code de retrait</div>
+                <input type="password" class="field-input" placeholder="Entrez votre code de retrait" id="code">
+            </div>
+
+            <div class="field">
+                <div class="field-label">Opérateur</div>
+                <input type="hidden" id="operator" value="MTN">
+                <div class="type-selector" id="operatorSelector">
+                    <div class="field-value" id="selectedType">MTN</div>
+                </div>
+            </div>
+
+            <button class="submit-button" id="submitBtn">
+                Enregistrer
+            </button>
+
+            
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="bottom-sheet" id="bottomSheet">
+        <div class="sheet-header">
+            <button class="btn" id="cancelBtn">Annuler</button>
+            <div class="sheet-title">Choisir l'opérateur</div>
+            <button class="btn" id="confirmBtn">Confirmer</button>
+        </div>
+        <div class="sheet-options">
+            <div class="option selected operator" data-operator="MTN">MTN</div>
+            <div class="option operator" data-operator="MOOV">MOOV</div>
+            <div class="option operator" data-operator="ORANGE">ORANGE</div>
+            <div class="option operator" data-operator="WAVE">WAVE</div>
+            <div class="option operator" data-operator="USDT">USDT</div>
+        </div>
+    </div>
+    
+    <script type="module">
+// --- Import des modules Firebase ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+// --- Configuration Firebase Lipton ---
+const firebaseConfig = {
+    apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
+    authDomain: "lipton-4f24a.firebaseapp.com",
+    databaseURL: "https://lipton-4f24a-default-rtdb.firebaseio.com",
+    projectId: "lipton-4f24a",
+    storageBucket: "lipton-4f24a.firebasestorage.app",
+    messagingSenderId: "1041905353994",
+    appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
+};
+
+// --- Initialisation Firebase ---
+const app = initializeApp(firebaseConfig);
+const db = getDatabase();
+const auth = getAuth();
+
+// --- Éléments DOM ---
+const operatorSelector = document.getElementById('operatorSelector');
+const bottomSheet = document.getElementById('bottomSheet');
+const overlay = document.getElementById('overlay');
+const cancelBtn = document.getElementById('cancelBtn');
+const confirmBtn = document.getElementById('confirmBtn');
+const submitBtn = document.getElementById('submitBtn');
+const options = document.querySelectorAll('.operator');
+const selectedTypeDisplay = document.getElementById('selectedType');
+const operatorInput = document.getElementById('operator');
+
+let currentSelection = 'MTN';
+let tempSelection = 'MTN';
+
+// --- Fonctions Bottom Sheet ---
+function openBottomSheet() {
+    bottomSheet.classList.add('active');
+    overlay.classList.add('active');
+    tempSelection = currentSelection;
+
+    options.forEach(option => {
+        option.classList.toggle('selected', option.dataset.operator === tempSelection);
+    });
+}
+
+function closeBottomSheet() {
+    bottomSheet.classList.remove('active');
+    overlay.classList.remove('active');
+    tempSelection = currentSelection;
+}
+
+function confirmSelection() {
+    currentSelection = tempSelection;
+    selectedTypeDisplay.textContent = currentSelection;
+    operatorInput.value = currentSelection;
+    closeBottomSheet();
+}
+
+// --- Gestion des événements Bottom Sheet ---
+operatorSelector.addEventListener('click', openBottomSheet);
+overlay.addEventListener('click', closeBottomSheet);
+cancelBtn.addEventListener('click', closeBottomSheet);
+confirmBtn.addEventListener('click', confirmSelection);
+
+options.forEach(option => {
+    option.addEventListener('click', () => {
+        options.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+        tempSelection = option.dataset.operator;
+    });
+});
+
+// --- Affichage des messages ---
+function showMessage(text, type) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.innerHTML = `
+        <div class="message-${type} animate__animated animate__fadeIn">
+            ${text}
+        </div>
+    `;
+
+    setTimeout(() => { messageDiv.innerHTML = ''; }, 5000);
+}
+
+// --- Validation du formulaire ---
+function validateForm() {
+    const ownerName = document.getElementById('ownerName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const code = document.getElementById('code').value.trim();
+
+    if (!ownerName) { showMessage('Le nom du propriétaire est requis', 'error'); return false; }
+    if (!phone) { showMessage('Le numéro de compte est requis', 'error'); return false; }
+    if (!code) { showMessage('Le code de retrait est requis', 'error'); return false; }
+    if (code.length < 4) { showMessage('Le code de retrait doit contenir au moins 4 caractères', 'error'); return false; }
+
+    return true;
+}
+
+// --- Enregistrement de la configuration de retrait ---
+async function setupWithdrawal() {
+    if (!validateForm()) return;
+
+    const ownerName = document.getElementById('ownerName').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const code = document.getElementById('code').value.trim();
+    const operator = operatorInput.value;
+
+    try {
+        const user = auth.currentUser;
+        if (!user) {
+            showMessage('Vous devez être connecté pour effectuer cette opération', 'error');
+            setTimeout(() => window.location.href = 'login.html', 2000);
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enregistrement en cours...';
+
+        await set(ref(db, `users/${user.uid}/withdrawalConfig`), {
+            ownerName,
+            phone,
+            operator,
+            code,
+            configuredAt: Date.now(),
+            lastUpdated: new Date().toISOString()
+        });
+
+        showMessage('Configuration enregistrée avec succès !', 'success');
+        setTimeout(() => window.location.href = 'carte.html', 2000);
+
+    } catch (error) {
+        console.error('Erreur lors de l\'enregistrement:', error);
+        showMessage(`Erreur: ${error.message}`, 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enregistrer';
+    }
+}
+
+// --- Charger les données existantes ---
+function loadExistingData() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const configRef = ref(db, `users/${user.uid}/withdrawalConfig`);
+    onValue(configRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            document.getElementById('ownerName').value = data.ownerName || '';
+            document.getElementById('phone').value = data.phone || '';
+            document.getElementById('code').value = data.code || '';
+            currentSelection = data.operator || 'MTN';
+            selectedTypeDisplay.textContent = currentSelection;
+            operatorInput.value = currentSelection;
+        }
+    });
+}
+
+// --- Écoute de l'état de l'utilisateur ---
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    loadExistingData();
+});
+
+// --- Événements du formulaire ---
+submitBtn.addEventListener('click', setupWithdrawal);
+
+document.querySelectorAll('.field-input').forEach(input => {
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') setupWithdrawal();
+    });
+});
+</script>   
+</body>
+</html>

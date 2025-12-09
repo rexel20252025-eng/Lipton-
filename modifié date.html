@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modifier mes retraits</title>
+<style>
+:root {
+    --primary-color: #4A90E2;
+    --accent-color: #FF6B6B;
+    --success-color: #4CAF50;
+    --text-color: #333;
+    --text-light: #666;
+    --background-color: #F0F4F8;
+    --card-background: #fff;
+    --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --transition-speed: 0.3s;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height:1.5;
+}
+
+.header {
+    padding: 16px;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    color:white;
+    font-weight:600;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    border-bottom-left-radius:12px;
+    border-bottom-right-radius:12px;
+}
+
+#admin-container { padding:16px; max-width:600px; margin:0 auto; }
+
+.card {
+    background: var(--card-background);
+    margin-bottom:16px;
+    padding:18px;
+    border-radius:12px;
+    box-shadow: var(--card-shadow);
+    border-left: 5px solid var(--primary-color);
+}
+
+.row { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.row:last-child { margin-bottom:0; }
+
+.label { font-size:13px; color: var(--text-light); }
+.value { font-size:14px; font-weight:600; }
+
+input[type="datetime-local"]{
+    padding:6px;
+    font-size:14px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+
+button {
+    padding:8px 14px;
+    background-color: var(--primary-color);
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    transition: background var(--transition-speed);
+}
+button:hover { background-color: #357ABD; }
+
+.no-history {
+    text-align:center;
+    padding:40px 20px;
+    color: var(--text-light);
+    font-size:15px;
+    background: var(--card-background);
+    border-radius:12px;
+    box-shadow: var(--card-shadow);
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Modifier mes retraits</h1>
+</div>
+
+<div id="admin-container"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+// --- Firebase config ---
+const firebaseConfig = {
+    apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
+    authDomain: "lipton-4f24a.firebaseapp.com",
+    databaseURL: "https://lipton-4f24a-default-rtdb.firebaseio.com",
+    projectId: "lipton-4f24a",
+    storageBucket: "lipton-4f24a.firebasestorage.app",
+    messagingSenderId: "1041905353994",
+    appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
+};
+
+// --- Init Firebase ---
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+// --- Utils ---
+function formatAmount(amount) { return `${amount.toLocaleString('fr-FR')} FCFA`; }
+
+// --- Create card admin ---
+function createAdminCard(wId, w){
+    const dt = new Date(w.timestamp);
+    const datetimeLocal = dt.toISOString().slice(0,16);
+    return `
+    <div class="card" data-id="${wId}">
+        <div class="row"><span class="label">Montant demandé</span><span class="value">− ${formatAmount(w.amount)}</span></div>
+        <div class="row">
+            <span class="label">Date & heure</span>
+            <input type="datetime-local" value="${datetimeLocal}" />
+        </div>
+        <div class="row">
+            <button class="save-btn">💾 Sauvegarder</button>
+        </div>
+    </div>`;
+}
+
+// --- Display history admin ---
+function displayAdminHistory(history){
+    const container = document.getElementById('admin-container');
+    if(!history || Object.keys(history).length===0){
+        container.innerHTML='<div class="no-history">Aucun retrait disponible</div>';
+        return;
+    }
+    container.innerHTML='';
+    Object.entries(history)
+        .sort(([,a],[,b])=>b.timestamp-a.timestamp)
+        .forEach(([wId,w])=>{
+            container.innerHTML += createAdminCard(wId, w);
+        });
+
+    // Add save functionality
+    container.querySelectorAll('.save-btn').forEach(btn=>{
+        btn.addEventListener('click', e=>{
+            const card = e.target.closest('.card');
+            const wId = card.dataset.id;
+            const newDate = new Date(card.querySelector('input').value).getTime();
+            const user = auth.currentUser;
+            if(!user) return alert('Utilisateur non connecté');
+            const updateRef = ref(database, `users/${user.uid}/withdrawalHistory/${wId}`);
+            update(updateRef, { timestamp: newDate })
+                .then(()=>alert('Date & heure mises à jour !'))
+                .catch(err=>alert('Erreur : '+err));
+        });
+    });
+}
+
+// --- Auth ---
+onAuthStateChanged(auth, user=>{
+    if(user){
+        const historyRef = ref(database, `users/${user.uid}/withdrawalHistory`);
+        onValue(historyRef, snapshot=>{
+            displayAdminHistory(snapshot.val());
+        });
+    } else { 
+        window.location.href='login.html'; 
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centre Personnel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+  /* Reset et base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff; /* Fond blanc */
+    color: #000000; /* Texte noir */
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 70px;
+}
+
+/* Header avec image et gradient léger */
+.header-gradient {
+    background: linear-gradient(to right, rgba(0, 24, 255, 0.2), rgba(255, 52, 0, 0.2)),
+                url('https://image.noelshack.com/fichiers/2025/50/2/1765267723-images-3.jpeg');
+    background-size: cover;
+    background-position: center;
+    color: #000000;
+    padding: 25px 15px 35px 15px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+/* Section profil améliorée */
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: rgba(255, 255, 255, 0.85); /* Fond clair semi-transparent */
+    padding: 10px 15px;
+    border-radius: 15px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+}
+
+/* Logo */
+.logo-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.05);
+}
+
+.logo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Informations utilisateur */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.user-id {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000000;
+}
+
+.user-additional-id {
+    font-size: 13px;
+    color: #555555;
+    margin-top: 3px;
+    opacity: 0.9;
+}
+
+/* VIP Progress Section */
+.vip-progress-container {
+    background-color: rgba(0,0,0,0.05);
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.vip-progress-bar {
+    background: linear-gradient(to right, #0066ff, #00ccff);
+    height: 100%;
+    width: 0%;
+}
+
+.vip-progress-text {
+    text-align: center;
+    color: #000000;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+/* Bank and Action Sections */
+.bank-section, .quick-action-section-wrapper {
+    background-color: rgba(0,0,0,0.03);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(0,0,0,0.1);
+    margin: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.bank-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.bank-header-text {
+    color: #000000;
+    font-weight: bold;
+}
+
+.link-button {
+    background-color: #0066ff;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+}
+
+.bank-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    text-align: center;
+    padding: 15px 0;
+}
+
+.bank-grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bank-grid-value {
+    color: #0066ff;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.bank-grid-label {
+    color: #555555;
+    font-size: 12px;
+}
+
+/* Recharge and Quick Action Sections */
+.recharge-section, 
+.quick-action-item-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.recharge-text, 
+.quick-action-content {
+    display: flex;
+    align-items: center;
+    color: #0066ff;
+}
+
+.quick-action-content svg {
+    margin-right: 10px;
+    stroke: #0066ff;
+}
+
+/* Logout Style */
+.deconnexion-item {
+    color: #ff4d4d !important;
+}
+
+.deconnexion-item .quick-action-content svg {
+    stroke: #ff4d4d;
+} 
+
+/* Navigation */
+.navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    display: flex;
+    max-width: 480px;
+    margin: 0 auto;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+}
+
+.nav-item {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    color: #666666;
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-item.active {
+    color: #0066ff;
+}
+
+.nav-icon {
+    margin-bottom: 4px;
+}
+
+/* Icônes Font Awesome */
+.nav-icon i {
+    font-size: 20px;
+    display: block;
+}
+   </style>
+</head>
+<body>
+    <div id="centre-personnel-app">
+        <!-- Header with User Information -->
+        <div class="header-gradient">
+            <div class="profile-section">
+                <div class="logo-container">
+                    <img src="https://image.noelshack.com/fichiers/2025/50/1/1765231047-pngtree-one-yellow-smiley-emoticon-sticker-png-image-15045160.png" alt="Profile Logo">
+                </div>
+                <div class="user-info">
+                    <div id="user-id" class="user-id">Chargement</div>
+                    <div id="user-additional-id" class="user-additional-id">0 Chargement</div>
+                </div>
+                <a href="#profil-parametres">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                </a>
+            </div>
+            
+            <div class="vip-progress-container">
+                <div id="vip-progress-bar" class="vip-progress-bar"></div>
+            </div>
+            <div class="vip-progress-text">
+                
+            </div>
+        </div>
+
+        <!-- Bank Section -->
+        <div id="bank-section" class="bank-section">
+            <div class="bank-header">
+                <div class="bank-header-text">Veuillez cliquez pour lié votre compte bancaire</div>
+                <button class="link-button" onclick="window.location.href='portefeuille.html'">Lier</button>
+            </div>
+            
+            <div class="bank-grid">
+                <div class="bank-grid-item">
+                    <div id="total-withdrawals" class="bank-grid-value">chargement</div>
+                    <div class="bank-grid-label">Total de retrait</div>
+                </div>
+                <div class="bank-grid-item">
+                    <div id="total-recharge" class="bank-grid-value">chargement</div>
+                    <div class="bank-grid-label">Total recharge</div>
+                </div>
+            </div> 
+
+            <div class="bank-grid">
+                <div class="bank-grid-item">
+                    <div id="main-balance" class="bank-grid-value">chargement</div>
+                    <div class="bank-grid-label">Solde principal</div>
+                </div>
+                <div class="bank-grid-item">
+                    <div id="total-revenue" class="bank-grid-value">chargement</div>
+                    <div class="bank-grid-label">Revenu total</div>
+                </div>
+            </div>
+
+            <a href="recharge.html" class="recharge-section">
+                <div class="recharge-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                        <line x1="12" x2="12" y1="8" y2="16"/>
+                        <line x1="8" x2="16" y1="12" y2="12"/>
+                    </svg>
+                    Recharge
+                </div>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a>
+        </div>
+
+        <!-- Quick Actions Section -->
+        <div id="quick-actions" class="quick-action-section-wrapper">
+            <a href="retrait.html" class="quick-action-item-wrapper">
+                <div class="quick-action-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Retrait
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a>
+
+            <a href="portefeuille.html" class="quick-action-item-wrapper">
+                <div class="quick-action-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    Enregistrement du portefeuille
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a>
+            
+            <a href="historique-retrait.html" class="quick-action-item-wrapper">
+                <div class="quick-action-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    Enregistrement de historique de retrait 
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a>
+            
+           <a href="historique.html" class="quick-action-item-wrapper">
+                <div class="quick-action-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    </svg>
+                    Enregistrement de historique de recharge 
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a> 
+
+            <a href="carte.html" class="quick-action-item-wrapper">
+                <div class="quick-action-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    </svg>
+                    Carte bancaire
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a>
+
+            <a href="services.html" class="quick-action-item-wrapper">
+                <div class="quick-action-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    Centre de l'aide
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a>
+
+            <a href="#bonus" class="quick-action-item-wrapper">
+                <div class="quick-action-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                        <path d="M22 4.5V5c0 1.1-.9 2-2 2H4a2 2 0 0 1-2-2V4"></path>
+                        <path d="M16.5 9.5V7H19a2 2 0 0 0 0-4h-5.5v8"></path>
+                        <path d="M4.5 14H9v-4"></path>
+                        <path d="M12 17.5v-8"></path>
+                        <path d="M16.5 17.5h-13a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6"></path>
+                    </svg>
+                    Bonus
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a>
+
+            <a href="equipe.html" class="quick-action-item-wrapper">
+                <div class="quick-action-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                    </svg>
+                    Mon équipe 
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a>
+
+            <a href="info.html" class="quick-action-item-wrapper">
+                <div class="quick-action-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    Centre d'infos
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a>
+
+            <a href="index.html" class="quick-action-item-wrapper deconnexion-item">
+                <div class="quick-action-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Déconnexion
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                </svg>
+            </a>
+            
+        </div>
+
+        <!-- Navigation avec icônes Font Awesome -->
+<div class="navigation">
+    <a href="accueil.html" class="nav-item active">
+        <div class="nav-icon"><i class="fas fa-home"></i></div>
+        <div>Accueil</div>
+    </a>
+    <a href="machine.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-ship"></i></div>
+        <div>Mes achats</div>
+    </a>
+    <a href="investir.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-coins"></i></div>
+        <div>Investir</div>
+    </a>
+    <a href="solde.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-user"></i></div>
+        <div>Compte</div>
+    </a>
+</div>
+    
+    <script>
+        // Vous pouvez ajouter ici du JavaScript pour initialiser l'interface utilisateur
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simuler le chargement des données utilisateur
+            setTimeout(function() {
+                document.getElementById('user-id').textContent = 'Utilisateur ';
+                document.getElementById('user-additional-id').textContent = 'ID: 7823945';
+                
+                // Animer la barre de progression VIP
+                const progressBar = document.getElementById('vip-progress-bar');
+                progressBar.style.transition = 'width 1.5s ease-in-out';
+                progressBar.style.width = '60%';
+            }, 500);
+        });
+    </script>
+    
+<script type="module">
+// Import des modules Firebase nécessaires
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { 
+    getDatabase, 
+    ref, 
+    get, 
+    set, 
+    update,
+    onValue,
+    query,
+    orderByChild,
+    equalTo,
+    push
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
+
+// Configuration Firebase Lipton
+const firebaseConfig = {
+    apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
+    authDomain: "lipton-4f24a.firebaseapp.com",
+    databaseURL: "https://lipton-4f24a-default-rtdb.firebaseio.com",
+    projectId: "lipton-4f24a",
+    storageBucket: "lipton-4f24a.firebasestorage.app",
+    messagingSenderId: "1041905353994",
+    appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
+};
+
+// Initialisation Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+// --- Fonctions utilitaires ---
+
+// Format de la monnaie avec FCFA après le montant
+function formatCurrency(amount) {
+    return `${Number(amount).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} FCFA`;
+}
+
+function showErrorMessage(message) {
+    const errorMessageElement = document.getElementById('error-message');
+    if (errorMessageElement) {
+        errorMessageElement.textContent = message;
+        errorMessageElement.style.display = 'block';
+        setTimeout(() => {
+            errorMessageElement.textContent = '';
+            errorMessageElement.style.display = 'none';
+        }, 3000);
+    }
+}
+
+function updateUserIdentifier(phoneNumber) {
+    const identifierElement = document.getElementById('user-id');
+    const additionalIdElement = document.getElementById('user-additional-id');
+    if (identifierElement && phoneNumber) {
+        const formattedNumber = phoneNumber.replace(/(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
+        const additionalId = `*******${phoneNumber.slice(-2)} `;
+        identifierElement.textContent = formattedNumber;
+        additionalIdElement.textContent = additionalId;
+    }
+}
+
+function updateUserBalance(balance) {
+    const balanceElements = ['', '', '', 'main-balance', ''];
+    balanceElements.forEach(elementId => {
+        const balanceElement = document.getElementById(elementId);
+        if (balanceElement) {
+            balanceElement.textContent = formatCurrency(balance || 0);
+        }
+    });
+}
+
+function updateTotalWithdrawals(totalWithdrawals) {
+    const totalWithdrawalsElement = document.getElementById('total-withdrawals');
+    if (totalWithdrawalsElement) {
+        totalWithdrawalsElement.textContent = formatCurrency(totalWithdrawals || 0);
+    }
+}
+
+// --- Gestion des retraits ---
+async function recordWithdrawal(userId, amount) {
+    try {
+        const userRef = ref(database, `users/${userId}`);
+        const userSnapshot = await get(userRef);
+        const userData = userSnapshot.val();
+        
+        if (!userData || userData.balance < amount) {
+            showErrorMessage("Solde insuffisant pour effectuer le retrait");
+            return false;
+        }
+        
+        const newBalance = userData.balance - amount;
+        const updates = { balance: newBalance };
+        const withdrawalHistoryRef = ref(database, `users/${userId}/withdrawalHistory`);
+        const newWithdrawalRef = push(withdrawalHistoryRef);
+        const withdrawalData = {
+            amount: amount,
+            timestamp: Date.now(),
+            status: 'success'
+        };
+        
+        await update(userRef, updates);
+        await set(newWithdrawalRef, withdrawalData);
+        updateUserBalance(newBalance);
+        calculateAndDisplayTotalWithdrawals(userId);
+        
+        return true;
+    } catch (error) {
+        console.error("Erreur lors du retrait:", error);
+        showErrorMessage("Une erreur est survenue lors du retrait");
+        return false;
+    }
+}
+
+// --- Calcul des revenus et recharges ---
+function calculateTotalRevenues(userId) {
+    const investmentsRef = ref(database, `investments/${userId}`);
+    return new Promise((resolve, reject) => {
+        onValue(investmentsRef, (snapshot) => {
+            const investments = snapshot.val();
+            const totalRevenue = investments 
+                ? Object.values(investments)
+                    .filter(inv => inv.status === 'active')
+                    .reduce((total, inv) => total + (inv.totalCollected || 0), 0)
+                : 0;
+
+            const totalRevenueElement = document.getElementById('total-revenue');
+            if (totalRevenueElement) totalRevenueElement.textContent = formatCurrency(totalRevenue);
+
+            resolve(totalRevenue);
+        }, (error) => {
+            console.error("Erreur lors de la récupération des revenus:", error);
+            const totalRevenueElement = document.getElementById('total-revenue');
+            if (totalRevenueElement) totalRevenueElement.textContent = formatCurrency(0);
+            reject(error);
+        });
+    });
+}
+
+function calculateTotalRecharges(userId) {
+    const rechargesRef = ref(database, 'transactions');
+    const userRechargesQuery = query(rechargesRef, orderByChild('userId'), equalTo(userId));
+    
+    return new Promise((resolve, reject) => {
+        onValue(userRechargesQuery, (snapshot) => {
+            const transactions = snapshot.val();
+            const totalRecharges = transactions
+                ? Object.values(transactions)
+                    .filter(tr => tr.status === 'success')
+                    .reduce((total, tr) => total + (parseFloat(tr.amount) || 0), 0)
+                : 0;
+            const rechargeCount = transactions
+                ? Object.values(transactions).filter(tr => tr.status === 'success').length
+                : 0;
+
+            const totalRechargesElement = document.getElementById('total-recharge');
+            if (totalRechargesElement) totalRechargesElement.textContent = formatCurrency(totalRecharges);
+            const rechargeCountElement = document.getElementById('recharge-count');
+            if (rechargeCountElement) rechargeCountElement.textContent = rechargeCount;
+
+            resolve({ totalRecharges, rechargeCount });
+        }, (error) => {
+            console.error("Erreur lors de la récupération des recharges:", error);
+            reject(error);
+        });
+    });
+}
+
+function calculateAndDisplayTotalWithdrawals(userId) {
+    const withdrawalHistoryRef = ref(database, `users/${userId}/withdrawalHistory`);
+    onValue(withdrawalHistoryRef, (snapshot) => {
+        const history = snapshot.val();
+        const totalWithdrawalsAmount = history 
+            ? Object.values(history).reduce((total, w) => total + (w.amount || 0), 0)
+            : 0;
+
+        updateTotalWithdrawals(totalWithdrawalsAmount);
+
+        const withdrawalCountElement = document.getElementById('withdrawal-count');
+        if (withdrawalCountElement) withdrawalCountElement.textContent = history ? Object.keys(history).length : '0';
+    });
+}
+
+// --- Gestion de l'authentification ---
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        try {
+            const userRef = ref(database, 'users/' + user.uid);
+            const snapshot = await get(userRef);
+            const userData = snapshot.val();
+
+            if (userData) {
+                if (userData.phoneNumber) updateUserIdentifier(userData.phoneNumber);
+                if (userData.balance !== undefined) updateUserBalance(userData.balance);
+
+                calculateAndDisplayTotalWithdrawals(user.uid);
+                await calculateTotalRecharges(user.uid);
+                await calculateTotalRevenues(user.uid);
+
+                const withdrawalButton = document.getElementById('withdrawal-button');
+                if (withdrawalButton) {
+                    withdrawalButton.addEventListener('click', async () => {
+                        const withdrawalAmountInput = document.getElementById('withdrawal-amount');
+                        const amount = parseFloat(withdrawalAmountInput.value);
+                        if (isNaN(amount) || amount <= 0) {
+                            showErrorMessage("Veuillez entrer un montant valide");
+                            return;
+                        }
+                        const result = await recordWithdrawal(user.uid, amount);
+                        if (result) {
+                            withdrawalAmountInput.value = '';
+                            alert(`Retrait de ${formatCurrency(amount)} effectué avec succès`);
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération des données:", error);
+        }
+    } else {
+        updateUserIdentifier("Non connecté");
+        updateUserBalance(0);
+        updateTotalWithdrawals(0);
+
+        const withdrawalCountElement = document.getElementById('withdrawal-count');
+        const totalRechargesElement = document.getElementById('total-recharges');
+        const rechargeCountElement = document.getElementById('recharge-count');
+        const totalRevenueElement = document.getElementById('total-revenue');
+
+        if (withdrawalCountElement) withdrawalCountElement.textContent = '0';
+        if (totalRechargesElement) totalRechargesElement.textContent = formatCurrency(0);
+        if (rechargeCountElement) rechargeCountElement.textContent = '0';
+        if (totalRevenueElement) totalRevenueElement.textContent = formatCurrency(0);
+    }
+});
+</script>    
+</body>
+</html>

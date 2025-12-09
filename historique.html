@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historique des Recharges</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+:root {
+    --primary-color: #3498db;      /* Bleu plus moderne */
+    --primary-light: #74b9ff;      /* Bleu ciel clair */
+    --primary-dark: #2980b9;       /* Bleu plus foncé */
+    --success-color: #00b894;      /* Vert menthe */
+    --warning-color: #fdcb6e;      /* Jaune */
+    --error-color: #ff7675;        /* Rouge corail */
+    --bg-color: #f7f9fc;           /* Fond blanc cassé */
+    --card-bg: #ffffff;            /* Blanc */
+    --text-primary: #2d3436;       /* Noir */
+    --text-secondary: #636e72;     /* Gris foncé */
+    --border-color: #dfe6e9;       /* Gris très clair */
+    --shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    --border-radius: 12px;         /* Arrondi uniforme */
+}
+
+[data-theme="dark"] {
+    --primary-color: #74b9ff;      /* Bleu ciel clair */
+    --primary-light: #a0d2f7;      /* Bleu plus pâle */
+    --primary-dark: #0984e3;       /* Bleu électrique */
+    --success-color: #55efc4;      /* Vert menthe clair */
+    --warning-color: #ffeaa7;      /* Jaune clair */
+    --error-color: #fab1a0;        /* Corail clair */
+    --bg-color: #2d3436;           /* Fond sombre */
+    --card-bg: #222f3e;            /* Bleu très foncé */
+    --text-primary: #dfe6e9;       /* Blanc cassé */
+    --text-secondary: #b2bec3;     /* Gris clair */
+    --border-color: #4b6584;       /* Bleu-gris moyen */
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    padding: 1.5rem;
+    font-size: 15px;
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: all 0.3s ease;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.theme-toggle {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    padding: 0.7rem 1.4rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    box-shadow: var(--shadow);
+}
+
+.pagination button:hover:not(:disabled) {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(52, 152, 219, 0.2);
+}
+
+.pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, 
+        rgba(222, 222, 222, 0.1) 25%, 
+        rgba(222, 222, 222, 0.2) 50%, 
+        rgba(222, 222, 222, 0.1) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.8s infinite;
+    border-radius: 6px;
+    height: 1.1rem;
+    margin: 0.3rem 0;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.loading-container {
+    background: var(--card-bg);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 0;
+    right: 0;
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: var(--card-bg);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    padding: 1rem 0;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    z-index: 1000;
+    box-shadow: var(--shadow);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-secondary);
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+    background-color: rgba(52, 152, 219, 0.08);
+    transform: translateY(-3px);
+    color: var(--primary-color);
+}
+
+.nav-item.active {
+    color: var(--primary-color);
+    background-color: rgba(52, 152, 219, 0.08);
+    font-weight: 600;
+}
+
+.nav-icon {
+    margin-bottom: 6px;
+    stroke: currentColor;
+    stroke-width: 2px;
+    font-size: 1.3rem;
+}
+
+.nav-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+/* Logout Style */
+.deconnexion-item {
+    color: var(--error-color) !important;
+}
+
+.deconnexion-item:hover {
+    background-color: rgba(255, 118, 117, 0.08);
+}
+
+.deconnexion-item .nav-icon {
+    stroke: var(--error-color);
+}
+
+/* Effet de parallaxe subtil sur les cartes */
+.history-item {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.history-item:hover {
+    transform: translateY(-5px) rotateX(2deg);
+}
+
+/* Personnalisation des scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-light);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Animations fluides pour les interactions */
+.interactive-element {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Adaptation pour grand écran */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1300px;
+    }
+    
+    .history-item {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Adaptation pour mobile */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 0.5rem;
+    }
+
+    .history-item {
+        grid-template-columns: 1fr;
+        padding: 1.2rem;
+        gap: 1rem;
+        max-width: 100%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    body {
+        padding: 1rem 0.5rem;
+    }
+    
+    .bottom-nav {
+        width: 90%;
+        bottom: 1rem;
+    }
+}color);
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 1.2rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+.theme-toggle:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-3px);
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    letter-spacing: -0.5px;
+}
+
+h1 i {
+    color: var(--primary-color);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.history-item {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.history-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: var(--primary-color);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.history-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.history-item:hover::before {
+    opacity: 1;
+    width: 7px;
+}
+
+.history-item.success::before {
+    background: var(--success-color);
+}
+
+.history-item.pending::before {
+    background: var(--warning-color);
+}
+
+.history-item.failed::before {
+    background: var(--error-color);
+}
+
+.history-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.info-value i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-top: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.status i {
+    font-size: 0.9rem;
+}
+
+.status-success {
+    background: rgba(0, 184, 148, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(0, 184, 148, 0.2);
+}
+
+.status-pending {
+    background: rgba(253, 203, 110, 0.1);
+    color: var(--warning-color);
+    border: 1px solid rgba(253, 203, 110, 0.2);
+}
+
+.status-failed {
+    background: rgba(255, 118, 117, 0.1);
+    color: var(--error-color);
+    border: 1px solid rgba(255, 118, 117, 0.2);
+}
+
+.amount {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    background: rgba(52, 152, 219, 0.08);
+    border-radius: 8px;
+    margin-top: 0.3rem;
+}
+
+.reject-reason {
+    grid-column: 1 / -1;
+    background: rgba(255, 118, 117, 0.05);
+    padding: 1.2rem 1.5rem;
+    border-radius: var(--border-radius);
+    color: var(--error-color);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid rgba(255, 118, 117, 0.15);
+    margin-top: 0.8rem;
+}
+
+.processing-info {
+    grid-column: 1 / -1;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(52, 152, 219, 0.05);
+    padding: 0.9rem 1.2rem;
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(52, 152, 219, 0.1);
+}
+
+.operator-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: rgba(52, 152, 219, 0.08);
+    color: var(--primary-color);
+    border: 1px solid rgba(52, 152, 219, 0.15);
+}
+
+.no-records {
+    text-align: center;
+    padding: 5rem 2rem;
+    color: var(--text-secondary);
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    border: 2px dashed var(--border-color);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.no-records i {
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    opacity: 0.6;
+}
+
+.fade-in {
+    animation: fadeIn 0.7s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 3.5rem;
+    gap: 0.8rem;
+}
+
+.pagination button {
+    background: var(--card-bg);
+    border: 1px solid var(--border-
+} 
+       </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-history"></i> Historique des Recharges</h1>
+                <p class="subtitle">Consultez l'historique de toutes vos opérations de recharge</p>
+            </div>
+            <button id="themeToggle" class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+        <div id="historyList"></div>
+        <div id="pagination" class="pagination"></div>
+    </div>
+    
+         
+ <script type="module">
+// --- Import Firebase ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { 
+    getAuth, 
+    onAuthStateChanged, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword 
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { 
+    getDatabase, 
+    ref, 
+    set, 
+    get, 
+    update, 
+    query, 
+    orderByChild, 
+    equalTo, 
+    onValue 
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
+
+// --- Configuration Firebase ---
+const firebaseConfig = {
+    apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
+    authDomain: "lipton-4f24a.firebaseapp.com",
+    databaseURL: "https://lipton-4f24a-default-rtdb.firebaseio.com",
+    projectId: "lipton-4f24a",
+    storageBucket: "lipton-4f24a.firebasestorage.app",
+    messagingSenderId: "1041905353994",
+    appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
+};
+
+try {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    const creditedTransactions = new Set();
+
+    // --- Met à jour le solde utilisateur ---
+    async function updateUserBalance(userId, amount, transactionId) {
+        if (creditedTransactions.has(transactionId)) return;
+
+        try {
+            const userRef = ref(db, `users/${userId}`);
+            const snapshot = await get(userRef);
+
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                const currentBalance = userData.solde || 0;
+                const newBalance = currentBalance + parseFloat(amount || 0);
+
+                const updates = {};
+                updates[`users/${userId}/solde`] = newBalance;
+                updates[`transactions/${transactionId}/credited`] = true;
+
+                await update(ref(db), updates);
+                creditedTransactions.add(transactionId);
+            }
+        } catch (error) {
+            console.error('Erreur de mise à jour du solde:', error);
+        }
+    }
+
+    // --- Formatage de date ---
+    function formatDate(dateString) {
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) throw new Error('Date invalide');
+
+            return new Intl.DateTimeFormat('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date).replace(',', ' à');
+        } catch {
+            return 'Date non disponible';
+        }
+    }
+
+    // --- Gestion du statut ---
+    function getStatusClass(status) {
+        const statusClasses = {
+            success: 'status-success',
+            pending: 'status-pending',
+            failed: 'status-failed'
+        };
+        return statusClasses[status] || '';
+    }
+
+    function translateStatus(status) {
+        const translations = {
+            success: 'Crédité',
+            pending: 'En cours de vérification',
+            failed: 'Échec'
+        };
+        return translations[status] || status;
+    }
+
+    // --- Création d'un élément d'historique ---
+    function createHistoryItem(transaction, userId) {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.dataset.transactionId = transaction.transactionId || '';
+
+        if (transaction.status === 'success' && !transaction.credited && userId) {
+            updateUserBalance(userId, transaction.amount || 0, transaction.transactionId);
+        }
+
+        historyItem.innerHTML = `
+            <div class="history-info">
+                <div class="info-group">
+                    <span class="info-label">Montant</span>
+                    <span class="info-value">${transaction.amount || 0} FCFA</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Numéro rechargé</span>
+                    <span class="info-value">${transaction.phone || 'Non spécifié'}</span>
+                </div>
+            </div>
+            <div class="history-info">
+                <div class="info-group">
+                    <span class="info-label">Opérateur</span>
+                    <span class="info-value">${transaction.operator?.toUpperCase() || 'Non spécifié'}</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">ID Transaction</span>
+                    <span class="info-value">${transaction.transactionId || 'Non spécifié'}</span>
+                </div>
+            </div>
+            <div class="history-info">
+                <div class="info-group">
+                    <span class="info-label">Date</span>
+                    <span class="info-value">${formatDate(transaction.date)}</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Numéro de paiement</span>
+                    <span class="info-value">${transaction.userPaymentNumber || 'Non spécifié'}</span>
+                </div>
+                ${transaction.processedDate ? `<div class="processing-info">Traité le ${formatDate(transaction.processedDate)}</div>` : ''}
+                ${transaction.status === 'failed' && transaction.rejectReason ? `<div class="reject-reason">Motif du rejet: ${transaction.rejectReason}</div>` : ''}
+                <div class="status ${getStatusClass(transaction.status || 'pending')}">
+                    ${translateStatus(transaction.status || 'pending')}
+                </div>
+            </div>
+        `;
+
+        return historyItem;
+    }
+
+    // --- Affichage des transactions ---
+    function displayTransactions(transactions, userId) {
+        const historyList = document.getElementById('historyList');
+        if (!historyList) return;
+
+        if (!transactions || Object.keys(transactions).length === 0) {
+            historyList.innerHTML = '<div class="no-records">Aucune transaction trouvée</div>';
+            return;
+        }
+
+        const userTransactions = Object.entries(transactions)
+            .filter(([_, tx]) => tx.userId === userId)
+            .map(([id, tx]) => ({ ...tx, id }))
+            .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+        if (userTransactions.length === 0) {
+            historyList.innerHTML = '<div class="no-records">Aucune transaction trouvée</div>';
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+
+        userTransactions.forEach(tx => {
+            const existingItem = document.querySelector(`[data-transaction-id="${tx.transactionId}"]`);
+            const newItem = createHistoryItem(tx, userId);
+
+            if (existingItem) {
+                if (existingItem.innerHTML !== newItem.innerHTML) {
+                    existingItem.parentNode.replaceChild(newItem, existingItem);
+                }
+            } else {
+                fragment.appendChild(newItem);
+            }
+        });
+
+        if (fragment.children.length) {
+            historyList.insertBefore(fragment, historyList.firstChild);
+        }
+
+        // Supprimer les anciennes transactions non présentes
+        const currentIds = new Set(userTransactions.map(t => t.transactionId));
+        Array.from(historyList.children).forEach(child => {
+            if (!currentIds.has(child.dataset.transactionId)) child.remove();
+        });
+    }
+
+    // --- Écoute de l'état de l'authentification ---
+    onAuthStateChanged(auth, (user) => {
+        const historyList = document.getElementById('historyList');
+        if (!historyList) return;
+
+        if (user) {
+            const transactionsRef = query(
+                ref(db, 'transactions'),
+                orderByChild('userId'),
+                equalTo(user.uid)
+            );
+
+            onValue(transactionsRef, (snapshot) => {
+                try {
+                    const transactions = snapshot.val();
+                    displayTransactions(transactions, user.uid);
+                } catch (err) {
+                    console.error('Erreur lors de la récupération des transactions:', err);
+                    historyList.innerHTML = '<div class="no-records">Erreur lors du chargement des transactions</div>';
+                }
+            }, (error) => {
+                console.error('Erreur Firebase:', error);
+                historyList.innerHTML = '<div class="no-records">Erreur de connexion</div>';
+            });
+        } else {
+            historyList.innerHTML = '<div class="no-records">Veuillez vous connecter pour voir votre historique</div>';
+        }
+    });
+
+} catch (error) {
+    console.error('Erreur d\'initialisation:', error);
+    const historyList = document.getElementById('historyList');
+    if (historyList) historyList.innerHTML = '<div class="no-records">Erreur d\'initialisation de l\'application</div>';
+}
+</script>   
+</body>
+</html>

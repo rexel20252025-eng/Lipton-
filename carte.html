@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Compte</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #f1f1f1;
+            --bg-dark-light: #1e1e1e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #f1f1f1;
+            --accent-color: #bb86fc;
+            --accent-variant: #000000;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 380px;
+            background-color: var(--bg-dark-light);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            background-color: var(--accent-variant);
+            color: var(--text-primary);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 22px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            opacity: 1;
+        }
+
+        .card-section {
+            padding: 20px;
+            background-color: var(--bg-dark);
+        }
+
+        .card {
+            background: linear-gradient(145deg, var(--accent-color), var(--accent-variant));
+            border-radius: 12px;
+            padding: 25px;
+            color: var(--bg-dark);
+            position: relative;
+            overflow: hidden;
+            transform: perspective(1000px) rotateX(10deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: perspective(1000px) rotateX(0);
+        }
+
+        .card-chip {
+            width: 50px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 6px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .card-details {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card-operator {
+            font-size: 18px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .card-number {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 4px;
+            font-size: 16px;
+            display: flex;
+            justify-content: space-between;
+            color: var(--bg-dark);
+        }
+
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .account-info {
+            background-color: var(--bg-dark-light);
+            padding: 20px;
+        }
+
+        .account-info-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+
+        .account-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .account-row:last-child {
+            border-bottom: none;
+        }
+
+        .account-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .account-value {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .message {
+            margin: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .message-error {
+            background-color: rgba(255,23,68,0.1);
+            color: #ff1744;
+        }
+
+        .message-success {
+            background-color: rgba(0,230,118,0.1);
+            color: #00e676;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: #ff1f00;
+        }
+
+        .nav-icon {
+            margin-bottom: 5px;
+            stroke: currentColor;
+        }
+
+        .nav-label {
+            font-size: 12px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+         
+         
+     /* Bottom Navigation */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    background-color: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ffffff; /* Changé en blanc */
+    cursor: pointer;
+}
+
+.nav-item.active {
+    color: #ff1f00; /* La couleur de l'élément actif reste rouge */
+}
+
+.nav-icon {
+    margin-bottom: 5px;
+    stroke: currentColor;
+}
+
+.nav-label {
+    font-size: 12px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="nav-btn" id="backButton">←</button>
+            <div class="header-title">COMPTE LIÉ</div>
+            <button class="nav-btn" id="menuButton">⋮</button>
+        </div>
+
+        <div class="card-section">
+            <div class="card">
+                <div class="card-chip"></div>
+                <div class="card-details">
+                    <div class="card-operator" id="operatorDisplay">Chargement...</div>
+                    <div class="card-number">
+                        <span>• • • •</span>
+                        <span>• • • •</span>
+                        <span>• • • •</span>
+                    </div>
+                    <div class="card-info">
+                        <span>Carte Bancaire</span>
+                        <span id="linkDate">Lié le --/--/----</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="account-info">
+            <h2 class="account-info-title">Détails du Compte</h2>
+            <div class="account-row">
+                <div class="account-label">OPÉRATEUR</div>
+                <div class="account-value" id="operatorInfo">Chargement...</div>
+            </div>
+            <div class="account-row">
+                <div class="account-label">NUMÉRO DE COMPTE</div>
+                <div class="account-value" id="phoneInfo">Chargement...</div>
+            </div>
+        </div>
+
+        <div id="message" class="message" style="display: none;"></div>
+    </div>
+    
+    
+    
+  <script type="module">
+// --- Import Firebase ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
+
+// --- Configuration Firebase ---
+const firebaseConfig = {
+    apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
+    authDomain: "lipton-4f24a.firebaseapp.com",
+    databaseURL: "https://lipton-4f24a-default-rtdb.firebaseio.com",
+    projectId: "lipton-4f24a",
+    storageBucket: "lipton-4f24a.firebasestorage.app",
+    messagingSenderId: "1041905353994",
+    appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
+};
+ 
+
+        // Initialisation de l'application
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const db = getDatabase();
+
+        // Fonctions utilitaires
+        const formatPhoneNumber = phone => phone.replace(/(\d{2})(?=\d)/g, "$1 ");
+        const formatDate = timestamp => {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('fr-FR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        };
+
+        // Gestion des messages
+        const showMessage = (text, type) => {
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = `message message-${type}`;
+            messageDiv.textContent = text;
+            messageDiv.style.display = 'block';
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        };
+
+        // Affichage des informations du compte
+        const displayAccountInfo = async (user) => {
+            try {
+                const snapshot = await get(ref(db, `users/${user.uid}/withdrawalConfig`));
+                const data = snapshot.val();
+
+                if (data) {
+                    document.getElementById('operatorDisplay').textContent = data.operator;
+                    document.getElementById('operatorInfo').textContent = data.operator;
+                    document.getElementById('phoneInfo').textContent = formatPhoneNumber(data.phone);
+                    document.getElementById('linkDate').textContent = `Compte lié le ${formatDate(data.configuredAt)}`;
+                    
+                    // Retirer la classe loading
+                    document.querySelectorAll('.loading').forEach(el => el.classList.remove('loading'));
+                } else {
+                    showMessage('Aucun compte lié trouvé', 'error');
+                }
+            } catch (error) {
+                showMessage(`Erreur: ${error.message}`, 'error');
+                console.error('Erreur lors du chargement des données:', error);
+            }
+        };
+
+        // Gestionnaires d'événements
+        document.getElementById('backButton').addEventListener('click', () => {
+            window.history.back();
+        });
+
+        document.getElementById('menuButton').addEventListener('click', () => {
+            // Implémentation du menu à venir
+            console.log('Menu clicked');
+        });
+
+        // Vérification de l'authentification
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                displayAccountInfo(user);
+            } else {
+                window.location.href = 'retrait.html';
+            }
+        });
+    </script>
+</body>
+</html>
+ 
