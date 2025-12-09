@@ -375,14 +375,34 @@ body {
     </div>
 
     <!-- Firebase Scripts -->
-    <script type="module">
-// --- Import Firebase ---
+ <script type="module">
+/* ================================
+   Import des modules Firebase
+================================ */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { 
+    getAuth, 
+    onAuthStateChanged, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword 
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { 
+    getDatabase, 
+    ref, 
+    set, 
+    get, 
+    update, 
+    onValue, 
+    runTransaction, 
+    query, 
+    orderByChild, 
+    equalTo 
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 
-// --- Configuration Firebase ---
+/* ================================
+   Configuration Firebase
+================================ */
 const firebaseConfig = {
     apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
     authDomain: "lipton-4f24a.firebaseapp.com",
@@ -393,278 +413,240 @@ const firebaseConfig = {
     appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
 };
 
-        
-         // Initialisation Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
+/* ================================
+   Initialisation Firebase
+================================ */
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
 
+/* ================================
+   State global
+================================ */
+let currentUser = null;
+let teamMembers = [];
+let totalTeamBonus = 0;
 
-        // State Management
-        let currentUser = null;
-        let teamMembers = [];
-        let totalTeamBonus = 0;
+/* ================================
+   Éléments UI
+================================ */
+const elements = {
+    showTeamButton: document.getElementById('showTeamButton'),
+    closeTeamModalBtn: document.getElementById('closeTeamModalBtn'),
+    copyReferralCodeBtn: document.getElementById('copyReferralCodeBtn'),
+    copyReferralLinkBtn: document.getElementById('copyReferralLinkBtn'),
+    teamModal: document.getElementById('teamModal'),
+    teamMembersContainer: document.getElementById('teamMembersContainer')
+};
 
-        // UI Elements
-        const elements = {
-            showTeamButton: document.getElementById('showTeamButton'),
-            closeTeamModalBtn: document.getElementById('closeTeamModalBtn'),
-            copyReferralCodeBtn: document.getElementById('copyReferralCodeBtn'),
-            copyReferralLinkBtn: document.getElementById('copyReferralLinkBtn'),
-            teamModal: document.getElementById('teamModal'),
-            teamMembersContainer: document.getElementById('teamMembersContainer')
-        };
+/* ================================
+   Fonctions utilitaires
+================================ */
+const utils = {
+    formatCurrency: (amount) => {
+        return amount.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' FCFA';
+    },
+    formatDate: (dateString) => {
+        return new Date(dateString).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+    },
+    copyToClipboard: async (elementId) => {
+        try {
+            const element = document.getElementById(elementId);
+            await navigator.clipboard.writeText(element.value);
+            alert('Copié !');
+        } catch (err) {
+            console.error('Erreur de copie:', err);
+        }
+    }
+};
 
-        // Utility Functions
-        const utils = {
-            formatCurrency: (amount) => {
-                return amount.toLocaleString('fr-FR', { 
-                    minimumFractionDigits: 0, 
-                    maximumFractionDigits: 0 
-                }) + ' FCFA';
-            },
+/* ================================
+   Mise à jour de l'UI
+================================ */
+const updateUI = {
+    teamStats: (members) => {
+        document.getElementById('teamCount').textContent = members.length;
+        document.getElementById('teamLevel').textContent = Math.floor(members.length / 5) + 1;
 
-            formatDate: (dateString) => {
-                return new Date(dateString).toLocaleDateString('fr-FR', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-            },
+        if (currentUser) {
+            const userRef = ref(database, `users/${currentUser.uid}`);
+            onValue(userRef, (snapshot) => {
+                const userData = snapshot.val();
+                totalTeamBonus = userData.totalReferralBonus || 0;
+                document.getElementById('totalBonus').textContent = utils.formatCurrency(totalTeamBonus);
+            });
+        }
+    },
 
-            copyToClipboard: async (elementId) => {
-                try {
-                    const element = document.getElementById(elementId);
-                    await navigator.clipboard.writeText(element.value);
-                    alert('Copié !');
-                } catch (err) {
-                    console.error('Erreur de copie:', err);
-                }
-            }
-        };
+    teamMembers: (members) => {
+        if (members.length === 0) {
+            elements.teamMembersContainer.innerHTML = `<div class="no-team-message">Aucun membre dans votre équipe</div>`;
+            return;
+        }
 
-        // UI Update Functions
-        const updateUI = {
-            teamStats: (members) => {
-                document.getElementById('teamCount').textContent = members.length;
-                document.getElementById('teamLevel').textContent = 
-                    Math.floor(members.length / 5) + 1;
-
-                if (currentUser) {
-                    const userRef = ref(database, `users/${currentUser.uid}`);
-                    onValue(userRef, (snapshot) => {
-                        const userData = snapshot.val();
-                        totalTeamBonus = userData.totalReferralBonus || 0;
-                        document.getElementById('totalBonus').textContent = 
-                            utils.formatCurrency(totalTeamBonus);
-                    });
-                }
-            },
-
-            teamMembers: (members) => {
-                if (members.length === 0) {
-                    elements.teamMembersContainer.innerHTML = `
-                        <div class="no-team-message">
-                            Aucun membre dans votre équipe
-                        </div>`;
-                    return;
-                }
-
-                elements.teamMembersContainer.innerHTML = members.map(member => `
-                    <div class="worker-item">
-                        <div class="worker-info">
-                            <div class="worker-avatar">
-                                ${member.username.charAt(0).toUpperCase()}
-                            </div>
-                            <div class="worker-details">
-                                <div class="worker-name">${member.username}</div>
-                                <div class="worker-date">
-                                    Rejoint le ${utils.formatDate(member.createdAt)}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="worker-stats">
-                            <div class="worker-stat">
-                                <div class="stat-label">Total investi</div>
-                                <div class="stat-amount">${utils.formatCurrency(member.totalInvestments || 0)}</div>
-                            </div>
-                            <div class="worker-stat">
-                                <div class="stat-label">Bonus généré</div>
-                                <div class="stat-amount">${utils.formatCurrency(member.totalBonusGenerated || 0)}</div>
-                            </div>
-                        </div>
+        elements.teamMembersContainer.innerHTML = members.map(member => `
+            <div class="worker-item">
+                <div class="worker-info">
+                    <div class="worker-avatar">${member.username.charAt(0).toUpperCase()}</div>
+                    <div class="worker-details">
+                        <div class="worker-name">${member.username}</div>
+                        <div class="worker-date">Rejoint le ${utils.formatDate(member.createdAt)}</div>
                     </div>
-                `).join('');
+                </div>
+                <div class="worker-stats">
+                    <div class="worker-stat">
+                        <div class="stat-label">Total investi</div>
+                        <div class="stat-amount">${utils.formatCurrency(member.totalInvestments || 0)}</div>
+                    </div>
+                    <div class="worker-stat">
+                        <div class="stat-label">Bonus généré</div>
+                        <div class="stat-amount">${utils.formatCurrency(member.totalBonusGenerated || 0)}</div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+};
+
+/* ================================
+   Traitement des bonus de parrainage
+================================ */
+const processReferralBonus = async (investmentAmount, memberUid, referrerUid) => {
+    try {
+        const referrerRef = ref(database, 'users/' + referrerUid);
+        const memberRef = ref(database, 'users/' + memberUid);
+        const bonusAmount = investmentAmount * 0.10;
+
+        if (bonusAmount > 0) {
+            await runTransaction(referrerRef, (currentData) => {
+                if (!currentData) return currentData;
+                return {
+                    ...currentData,
+                    balance: (currentData.balance || 0) + bonusAmount,
+                    totalReferralBonus: (currentData.totalReferralBonus || 0) + bonusAmount
+                };
+            });
+
+            await runTransaction(memberRef, (currentData) => {
+                if (!currentData) return currentData;
+                return {
+                    ...currentData,
+                    totalBonusGenerated: (currentData.totalBonusGenerated || 0) + bonusAmount,
+                    totalInvestments: (currentData.totalInvestments || 0) + investmentAmount
+                };
+            });
+
+            const bonusLogRef = ref(database, `bonusLogs/${referrerUid}`);
+            await update(bonusLogRef, {
+                [`bonus_${Date.now()}`]: {
+                    amount: bonusAmount,
+                    memberId: memberUid,
+                    investmentAmount: investmentAmount,
+                    timestamp: new Date().toISOString()
+                }
+            });
+
+            const notificationRef = ref(database, `notifications/${referrerUid}`);
+            await update(notificationRef, {
+                [`notif_${Date.now()}`]: {
+                    type: 'referral_bonus',
+                    message: `Vous avez reçu un bonus de parrainage de ${utils.formatCurrency(bonusAmount)}`,
+                    amount: bonusAmount,
+                    memberId: memberUid,
+                    timestamp: new Date().toISOString(),
+                    read: false
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Erreur lors du traitement du bonus:', error);
+    }
+};
+
+/* ================================
+   Écoute des nouveaux investissements
+================================ */
+const listenForNewInvestments = (userId) => {
+    const investmentsRef = ref(database, 'investments');
+    const userInvestmentsQuery = query(investmentsRef, orderByChild('userId'), equalTo(userId));
+
+    onValue(userInvestmentsQuery, (snapshot) => {
+        if (snapshot.exists()) {
+            snapshot.forEach((investmentSnapshot) => {
+                const investment = investmentSnapshot.val();
+                if (!investment.bonusProcessed) {
+                    const userRef = ref(database, `users/${userId}`);
+                    onValue(userRef, (userSnapshot) => {
+                        const userData = userSnapshot.val();
+                        if (userData.referredBy) {
+                            processReferralBonus(investment.amount, userId, userData.referredBy);
+                            update(ref(database, `investments/${investmentSnapshot.key}`), { bonusProcessed: true });
+                        }
+                    }, { onlyOnce: true });
+                }
+            });
+        }
+    });
+};
+
+/* ================================
+   Gestion des événements UI
+================================ */
+const setupEventListeners = () => {
+    elements.showTeamButton?.addEventListener('click', () => elements.teamModal.classList.remove('hidden'));
+    elements.closeTeamModalBtn?.addEventListener('click', () => elements.teamModal.classList.add('hidden'));
+    elements.copyReferralCodeBtn?.addEventListener('click', () => utils.copyToClipboard('referralCode'));
+    elements.copyReferralLinkBtn?.addEventListener('click', () => utils.copyToClipboard('referralLink'));
+    elements.teamModal?.addEventListener('click', (e) => {
+        if (e.target === elements.teamModal) elements.teamModal.classList.add('hidden');
+    });
+};
+
+/* ================================
+   Initialisation de l'application
+================================ */
+const startApp = () => {
+    setupEventListeners();
+
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        currentUser = user;
+
+        // Écoute des données utilisateur
+        const userRef = ref(database, 'users/' + user.uid);
+        onValue(userRef, (snapshot) => {
+            const userData = snapshot.val();
+            if (userData?.referralCode) {
+                document.getElementById('referralCode').value = userData.referralCode;
+                document.getElementById('referralLink').value = `${window.location.origin}/index.html?ref=${userData.referralCode}`;
             }
-        };
+        });
 
-        // Process Referral Bonus for New Investment
-        const processReferralBonus = async (investmentAmount, memberUid, referrerUid) => {
-            try {
-                const referrerRef = ref(database, 'users/' + referrerUid);
-                const memberRef = ref(database, 'users/' + memberUid);
-                const bonusAmount = investmentAmount * 0.10; // 10% de l'investissement
-
-                if (bonusAmount > 0) {
-                    // Mise à jour du solde du parrain
-                    await runTransaction(referrerRef, (currentData) => {
-                        if (!currentData) return currentData;
-                        return {
-                            ...currentData,
-                            balance: (currentData.balance || 0) + bonusAmount,
-                            totalReferralBonus: (currentData.totalReferralBonus || 0) + bonusAmount
-                        };
-                    });
-
-                    // Mise à jour des stats du filleul
-                    await runTransaction(memberRef, (currentData) => {
-                        if (!currentData) return currentData;
-                        return {
-                            ...currentData,
-                            totalBonusGenerated: (currentData.totalBonusGenerated || 0) + bonusAmount,
-                            totalInvestments: (currentData.totalInvestments || 0) + investmentAmount
-                        };
-                    });
-
-                    // Log du bonus
-                    const bonusLogRef = ref(database, `bonusLogs/${referrerUid}`);
-                    await update(bonusLogRef, {
-                        [`bonus_${Date.now()}`]: {
-                            amount: bonusAmount,
-                            memberId: memberUid,
-                            investmentAmount: investmentAmount,
-                            timestamp: new Date().toISOString()
-                        }
-                    });
-
-                    // Notification
-                    const notificationRef = ref(database, `notifications/${referrerUid}`);
-                    await update(notificationRef, {
-                        [`notif_${Date.now()}`]: {
-                            type: 'referral_bonus',
-                            message: `Vous avez reçu un bonus de parrainage de ${utils.formatCurrency(bonusAmount)}`,
-                            amount: bonusAmount,
-                            memberId: memberUid,
-                            timestamp: new Date().toISOString(),
-                            read: false
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Erreur lors du traitement du bonus:', error);
+        // Écoute des membres de l'équipe
+        const teamQuery = query(ref(database, 'users'), orderByChild('referredBy'), equalTo(user.uid));
+        onValue(teamQuery, (snapshot) => {
+            teamMembers = [];
+            if (snapshot.exists()) {
+                snapshot.forEach((memberSnapshot) => {
+                    const memberData = { ...memberSnapshot.val(), uid: memberSnapshot.key };
+                    teamMembers.push(memberData);
+                    listenForNewInvestments(memberData.uid);
+                });
             }
-        };
+            updateUI.teamStats(teamMembers);
+            updateUI.teamMembers(teamMembers);
+        });
+    });
+};
 
-        // Listen for New Investments
-        const listenForNewInvestments = (userId) => {
-            const investmentsRef = ref(database, 'investments');
-            const userInvestmentsQuery = query(
-                investmentsRef,
-                orderByChild('userId'),
-                equalTo(userId)
-            );
-
-            onValue(userInvestmentsQuery, (snapshot) => {
-                if (snapshot.exists()) {
-                    snapshot.forEach((investmentSnapshot) => {
-                        const investment = investmentSnapshot.val();
-                        if (!investment.bonusProcessed) {
-                            const userRef = ref(database, `users/${userId}`);
-                            onValue(userRef, (userSnapshot) => {
-                                const userData = userSnapshot.val();
-                                if (userData.referredBy) {
-                                    processReferralBonus(
-                                        investment.amount,
-                                        userId,
-                                        userData.referredBy
-                                    );
-                                    // Marquer comme traité
-                                    update(ref(database, `investments/${investmentSnapshot.key}`), {
-                                        bonusProcessed: true
-                                    });
-                                }
-                            }, { onlyOnce: true });
-                        }
-                    });
-                }
-            });
-        };
-
-        // Event Listeners Setup
-        const setupEventListeners = () => {
-            elements.showTeamButton?.addEventListener('click', () => {
-                elements.teamModal.classList.remove('hidden');
-            });
-
-            elements.closeTeamModalBtn?.addEventListener('click', () => {
-                elements.teamModal.classList.add('hidden');
-            });
-
-            elements.copyReferralCodeBtn?.addEventListener('click', () => 
-                utils.copyToClipboard('referralCode'));
-            
-            elements.copyReferralLinkBtn?.addEventListener('click', () => 
-                utils.copyToClipboard('referralLink'));
-
-            // Fermer la modal en cliquant en dehors
-            elements.teamModal?.addEventListener('click', (e) => {
-                if (e.target === elements.teamModal) {
-                    elements.teamModal.classList.add('hidden');
-                }
-            });
-        };
-
-        // Start Application
-        const startApp = () => {
-            setupEventListeners();
-
-            onAuthStateChanged(auth, (user) => {
-                if (!user) {
-                    window.location.href = 'index.html';
-                    return;
-                }
-
-                currentUser = user;
-                
-                // Listen for user data changes
-                const userRef = ref(database, 'users/' + user.uid);
-                onValue(userRef, (snapshot) => {
-                    const userData = snapshot.val();
-                    if (userData?.referralCode) {
-                        document.getElementById('referralCode').value = userData.referralCode;
-                        document.getElementById('referralLink').value = 
-                            `${window.location.origin}/index.html?ref=${userData.referralCode}`;
-                    }
-                });
-
-                // Listen for team members
-                const teamQuery = query(
-                    ref(database, 'users'),
-                    orderByChild('referredBy'),
-                    equalTo(user.uid)
-                );
-
-                onValue(teamQuery, (snapshot) => {
-                    teamMembers = [];
-                    if (snapshot.exists()) {
-                        snapshot.forEach((memberSnapshot) => {
-                            const memberData = {
-                               ...memberSnapshot.val(),
-                                uid: memberSnapshot.key
-                            };
-                            teamMembers.push(memberData);
-                            // Écouter les investissements
-                            listenForNewInvestments(memberData.uid);
-                        });
-                    }
-                    updateUI.teamStats(teamMembers);
-                    updateUI.teamMembers(teamMembers);
-                });
-            });
-        };
-
-        // Start the application
-        startApp();
-    </script>
+/* ================================
+   Démarrage
+================================ */
+startApp();
+</script>   
 </body>
 </html>
