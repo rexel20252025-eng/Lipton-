@@ -153,7 +153,7 @@ function statusBadge(status){
 function createWithdrawalCard(w) {
     return `
     <div class="card">
-        <div class="row"><span class="label">Montant demandé</span><span class="value">− ${formatAmount(w.amount)}</span></div>
+        <div class="row"><span class="label">Montant retiré</span><span class="value">− ${formatAmount(w.amount)}</span></div>
         <div class="row"><span class="label">Date de retrait</span><span class="value">${formatDate(w.timestamp)}</span></div>
         <div class="row"><span class="label">Statut</span><span class="value">${statusBadge(w.status)}</span></div>
         <div class="row"><span class="label">Montant a recevoir</span><span <span class="value orange-text">${formatAmount(w.amount - (w.fees || 0))}</span></div>
