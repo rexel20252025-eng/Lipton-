@@ -170,6 +170,74 @@
             letter-spacing: 0.3px;
         }
 
+        /* NOUVEAU - Tableau LIPTON */
+        .table-section {
+            padding: 0 20px 25px;
+        }
+
+        .table-header {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .lipton-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+
+        .lipton-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .lipton-table td {
+            padding: 10px 6px;
+            text-align: center;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .lipton-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .lipton-table tr:hover {
+            background: #e3f2fd;
+            transform: scale(1.01);
+            transition: all 0.2s;
+        }
+
+        .profit {
+            color: #10b981 !important;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .cost {
+            color: #ef4444 !important;
+            font-weight: 700;
+        }
+
+        .grille {
+            font-weight: 700;
+            color: #1e293b;
+        }
+
         /* Cartes principales avec bordures en bas */
         .card-container {
             padding: 0 20px 30px;
@@ -366,6 +434,73 @@
             <div class="stat-value">4 500+</div>
             <div class="stat-label">Investisseurs actifs</div>
         </div>
+    </div>
+
+    <!-- NOUVEAU TABLEAU LIPTON - JUSTE APRÈS STATS -->
+    <div class="table-section">
+        <div class="table-header">Plans d'investissement</div>
+        <table class="lipton-table">
+            <thead>
+                <tr>
+                    <th>Niv</th>
+                    <th>Prix</th>
+                    <th>par/Jour</th>
+                    <th>Jours</th>
+                    <th>Total</th>
+                    <th>Bénéfices</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="grille"><b>L1</b></td>
+                    <td class="cost">5 500</td>
+                    <td>1 100</td>
+                    <td>20</td>
+                    <td>22 000</td>
+                    <td class="profit">+16 500</td>
+                </tr>
+                <tr>
+                    <td class="grille"><b>L2</b></td>
+                    <td class="cost">10 500</td>
+                    <td>2 730</td>
+                    <td>19</td>
+                    <td>51 870</td>
+                    <td class="profit">+41 370</td>
+                </tr>
+                <tr>
+                    <td class="grille"><b>L3</b></td>
+                    <td class="cost">20 500</td>
+                    <td>5 330</td>
+                    <td>18</td>
+                    <td>95 940</td>
+                    <td class="profit">+75 440</td>
+                </tr>
+                <tr>
+                    <td class="grille"><b>L4</b></td>
+                    <td class="cost">50 000</td>
+                    <td>12 000</td>
+                    <td>12</td>
+                    <td>144 000</td>
+                    <td class="profit">+94 000</td>
+                </tr>
+                <tr>
+                    <td class="grille"><b>L5</b></td>
+                    <td class="cost">100 000</td>
+                    <td>26 000</td>
+                    <td>15</td>
+                    <td>390 000</td>
+                    <td class="profit">+290 000</td>
+                </tr>
+                <tr>
+                    <td class="grille"><b>L6</b></td>
+                    <td class="cost">200 000</td>
+                    <td>55 000</td>
+                    <td>10</td>
+                    <td>550 000</td>
+                    <td class="profit">+350 000</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <!-- Opportunités d'investissement -->
