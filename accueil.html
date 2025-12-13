@@ -6,16 +6,17 @@
     <title>Accueil - Investissements Maritimes</title>
     <!-- Ajout de Font Awesome pour les icônes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-            background: #4d4747;
+            background: #ffffff;
             margin: 0 auto;
             max-width: 480px;
             color: #1a1a1a;
@@ -23,21 +24,22 @@
             min-height: 100vh;
         }
 
-        /* Carrousel */
+        /* Carrousel - EN HAUT */
         .carousel-container {
             position: relative;
             width: 100%;
-            height: 220px;
+            height: 240px;
             overflow: hidden;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border-radius: 0 0 20px 20px;
         }
 
         .carousel {
             display: flex;
             width: 300%;
             height: 100%;
-            transition: transform 0.5s ease-in-out;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .carousel-slide {
@@ -58,129 +60,226 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5));
+            background: linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 20px;
+            padding: 30px 25px;
             color: white;
         }
 
         .carousel-overlay h2 {
-            font-size: 24px;
-            margin-bottom: 5px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            letter-spacing: -0.5px;
         }
 
         .carousel-overlay p {
-            font-size: 14px;
-            opacity: 0.9;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            font-size: 16px;
+            opacity: 0.95;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            font-weight: 300;
         }
 
         .carousel-dots {
             position: absolute;
-            bottom: 15px;
-            right: 20px;
+            bottom: 20px;
+            right: 25px;
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
 
         .dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background-color: rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.6);
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
         }
 
         .dot.active {
-            background-color: white;
+            background-color: #fff;
+            transform: scale(1.2);
+            box-shadow: 0 0 8px rgba(255,255,255,0.8);
         }
 
-        /* Sections principales */
+        /* Titre principal amélioré */
         .section-header {
-            padding: 15px 15px 5px;
-            font-size: 18px;
-            font-weight: 600;
+            padding: 25px 20px 15px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-align: center;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
         }
 
-        .card-container {
-            padding: 10px 15px;
-        }
-
-        .main-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 15px;
-        }
-
-        .main-card-image {
-            height: 130px;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .main-card-content {
-            padding: 15px;
-        }
-
-        .main-card-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .main-card-desc {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 12px;
-        }
-
-        .main-card-price {
-            font-size: 15px;
-            font-weight: 600;
-            color: #0066ff;
-        }
-
+        /* Statistiques améliorées */
         .stats-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            padding: 0 15px;
-            margin-bottom: 20px;
+            gap: 15px;
+            padding: 0 20px 25px;
         }
 
         .stat-card {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 25px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
             text-align: center;
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
         }
 
         .stat-icon {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #0066ff;
+            font-size: 32px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .stat-value {
-            font-size: 20px;
+            font-size: 26px;
             font-weight: 700;
             color: #1a1a1a;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .stat-label {
-            font-size: 12px;
-            color: #666;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+            letter-spacing: 0.3px;
         }
 
-        /* Navigation */
+        /* Cartes principales avec bordures en bas */
+        .card-container {
+            padding: 0 20px 30px;
+        }
+
+        .main-card {
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.8);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .main-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.15);
+        }
+
+        .main-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20px;
+            right: 20px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            border-radius: 2px;
+        }
+
+        .main-card-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .main-card-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+        }
+
+        .main-card-content {
+            padding: 25px 25px 30px;
+        }
+
+        .main-card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+            letter-spacing: -0.3px;
+        }
+
+        .main-card-desc {
+            font-size: 15px;
+            color: #64748b;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .main-card-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #10b981;
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .main-card-price::before {
+            content: '💰';
+            font-size: 16px;
+        }
+
+        /* Bouton principal amélioré */
+        .primary-button {
+            display: block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 18px 30px;
+            border-radius: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            margin: 30px 20px;
+            font-size: 16px;
+            box-shadow: 0 20px 40px rgba(102,126,234,0.3);
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .primary-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 25px 50px rgba(102,126,234,0.4);
+        }
+
+        /* Navigation INCHANGÉE */
         .navigation {
             position: fixed;
             bottom: 0;
@@ -211,56 +310,40 @@
             margin-bottom: 4px;
         }
 
-        /* Ajout pour les icônes Font Awesome */
         .nav-icon i {
             font-size: 20px;
             display: block;
         }
 
-        /* Bouton principal */
-        .primary-button {
-            display: block;
-            background: linear-gradient(to right, #3b82f6, #2563eb);
-            color: white;
-            text-align: center;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            margin: 15px;
-        }
-
-        /* Espace pour éviter que le contenu ne soit caché derrière la navigation */
+        /* Espace pour navigation */
         .spacer {
-            height: 70px;
+            height: 80px;
         }
     </style>
 </head>
 <body>
-    <!-- Carrousel d'images -->
+    <!-- Carrousel d'images EN HAUT -->
     <div class="carousel-container">
         <div class="carousel">
             <div class="carousel-slide">
                 <img src="https://image.noelshack.com/fichiers/2025/50/2/1765252439-images-1.jpeg" alt="Croisière de luxe">
                 <div class="carousel-overlay">
-                    <h2>DISTRIBUTION DES BOISSONS LIPTON
-
-</h2>
-                    <p> </p>
+                    <h2>DISTRIBUTION DES BOISSONS LIPTON</h2>
+                    <p>Investissez dès maintenant et profitez de rendements exceptionnels</p>
                 </div>
             </div>
             <div class="carousel-slide">
                 <img src="https://image.noelshack.com/fichiers/2025/50/2/1765252595-images-2.jpeg" alt="Yacht de luxe">
                 <div class="carousel-overlay">
                     <h2>DISTRIBUTION DES BOISSONS LIPTON</h2>
-                    <p></p>
+                    <p>Opportunités uniques d'investissement maritime</p>
                 </div>
             </div>
             <div class="carousel-slide">
                 <img src="https://image.noelshack.com/fichiers/2025/50/2/1765252652-images-3.jpeg" alt="MSC Bugatti">
                 <div class="carousel-overlay">
-                    <h2></h2>
-                    <p></p>
+                    <h2>OPPORTUNITÉS LIPTON PREMIUM</h2>
+                    <p>Rejoignez les investisseurs qui gagnent tous les jours</p>
                 </div>
             </div>
         </div>
@@ -276,44 +359,44 @@
         <div class="stat-card">
             <div class="stat-icon">📈</div>
             <div class="stat-value">+100%</div>
-            <div class="stat-label">Graphique</div>
+            <div class="stat-label">Rendement garanti</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">👥</div>
-            <div class="stat-value">4 500</div>
+            <div class="stat-value">4 500+</div>
             <div class="stat-label">Investisseurs actifs</div>
         </div>
     </div>
 
     <!-- Opportunités d'investissement -->
-    <div class="section-header">DISTRIBUTION DES BOISSONS LIPTON </div>
+    <div class="section-header">DISTRIBUTION DES BOISSONS LIPTON</div>
     <div class="card-container">
         <div class="main-card">
             <div class="main-card-image" style="background-image: url('https://image.noelshack.com/fichiers/2025/50/2/1765252439-images-1.jpeg');"></div>
             <div class="main-card-content">
-                <div class="main-card-title">LIPTON 1: 5 500 FCFA</div>
-                <div class="main-card-desc">Rendement de 1 080 FCFA quotidien pendant 22 jours</div>
-                <div class="main-card-price"> revenus total:--> 23 760 FCFA</div>
+                <div class="main-card-title">🍵 LIPTON 1</div>
+                <div class="main-card-desc">Investissement de 5 500 FCFA avec rendement quotidien de 1 100 FCFA pendant 20 jours</div>
+                <div class="main-card-price">23 760 FCFA de revenus totaux</div>
             </div>
         </div>
         
         <div class="main-card">
             <div class="main-card-image" style="background-image: url('https://image.noelshack.com/fichiers/2025/50/2/1765252652-images-3.jpeg');"></div>
             <div class="main-card-content">
-                <div class="main-card-title">LIPTON 2: 10 500 FCFA </div>
-                <div class="main-card-desc">Rendement de 2 500 FCFA quotidien pendant 18 jours</div>
-                <div class="main-card-price">Revenus total:--> 45 000 FCFA</div>
+                <div class="main-card-title">🍵 LIPTON 2</div>
+                <div class="main-card-desc">Investissement de 10 500 FCFA avec rendement quotidien de 2 730 FCFA pendant 19 jours</div>
+                <div class="main-card-price">51 870 FCFA de revenus totaux</div>
             </div>
         </div>
     </div>
 
     <!-- Bouton principal -->
-    <a href="investir.html" class="primary-button">Découvrir tous les investissements</a>
+    <a href="investir.html" class="primary-button">🔥 Découvrir tous les investissements</a>
 
-    <!-- Espace pour que le contenu ne soit pas caché par la navigation -->
+    <!-- Espace pour navigation -->
     <div class="spacer"></div>
 
-    <!-- Navigation avec icônes Font Awesome -->
+    <!-- Navigation INCHANGÉE -->
     <div class="navigation">
         <a href="accueil.html" class="nav-item active">
             <div class="nav-icon"><i class="fas fa-home"></i></div>
@@ -334,45 +417,33 @@
     </div>
 
     <script>
-        // Script pour le carrousel
+        // Script pour le carrousel (inchangé)
         let currentSlide = 0;
         const carousel = document.querySelector('.carousel');
         const dots = document.querySelectorAll('.dot');
         const slideCount = document.querySelectorAll('.carousel-slide').length;
 
-        // Fonction pour changer de slide
         function goToSlide(n) {
             carousel.style.transform = `translateX(-${n * 33.333}%)`;
             currentSlide = n;
-            
-            // Mise à jour des points indicateurs
             dots.forEach((dot, i) => {
                 dot.classList.toggle('active', i === n);
             });
         }
 
-        // Fonction pour passer à la slide suivante
         function nextSlide() {
             currentSlide = (currentSlide + 1) % slideCount;
             goToSlide(currentSlide);
         }
 
-        // Configuration du carrousel automatique
         let slideInterval = setInterval(nextSlide, 5000);
 
-        // Permettre de cliquer sur les points pour naviguer
         dots.forEach((dot, i) => {
             dot.addEventListener('click', () => {
-                clearInterval(slideInterval); // Arrêter le défilement automatique
+                clearInterval(slideInterval);
                 goToSlide(i);
-                slideInterval = setInterval(nextSlide, 5000); // Redémarrer le défilement
+                slideInterval = setInterval(nextSlide, 5000);
             });
-        });
-
-        // Initialisation Firebase
-        document.addEventListener('DOMContentLoaded', () => {
-            // Ici, vous pouvez ajouter du code pour vérifier l'authentification
-            // et rediriger l'utilisateur si nécessaire
         });
     </script>
 </body>
