@@ -22,6 +22,7 @@
             color: #1a1a1a;
             position: relative;
             min-height: 100vh;
+            padding-bottom: 110px; /* Espace pour navigation améliorée */
         }
 
         /* Carrousel - EN HAUT */
@@ -347,7 +348,9 @@
             box-shadow: 0 25px 50px rgba(102,126,234,0.4);
         }
 
-        /* Navigation INCHANGÉE */
+        /* ==========================================================================
+           NAVIGATION AMÉLIORÉE - NOUVELLE VERSION
+        ========================================================================== */
         .navigation {
             position: fixed;
             bottom: 0;
@@ -357,36 +360,48 @@
             display: flex;
             max-width: 480px;
             margin: 0 auto;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            padding: 10px 0;
+            width: 100%;
+            z-index: 100;
         }
 
         .nav-item {
             flex: 1;
             padding: 12px 0;
             text-align: center;
-            color: #666;
-            font-size: 12px;
+            color: #a0aec0;
+            font-size: 11px;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
 
         .nav-item.active {
-            color: #0066ff;
+            color: #667eea;
+        }
+
+        .nav-item.active .nav-icon i {
+            transform: scale(1.2);
+        }
+
+        .nav-item:hover {
+            color: #667eea;
         }
 
         .nav-icon {
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            transition: transform 0.3s ease;
         }
 
         .nav-icon i {
-            font-size: 20px;
+            font-size: 22px;
             display: block;
         }
 
-        /* Espace pour navigation */
-        .spacer {
-            height: 80px;
-        }
+        /* Supprimé .spacer car padding-bottom sur body */
     </style>
 </head>
 <body>
@@ -521,26 +536,23 @@
     <!-- Bouton principal -->
     <a href="investir.html" class="primary-button">🔥 Découvrir tous les investissements</a>
 
-    <!-- Espace pour navigation -->
-    <div class="spacer"></div>
-
-    <!-- Navigation INCHANGÉE -->
+    <!-- Navigation AMÉLIORÉE -->
     <div class="navigation">
         <a href="accueil.html" class="nav-item active">
             <div class="nav-icon"><i class="fas fa-home"></i></div>
             <div>Accueil</div>
         </a>
         <a href="machine.html" class="nav-item">
-            <div class="nav-icon"><i class="fas fa-ship"></i></div>
-            <div>Mes achats</div>
+            <div class="nav-icon"><i class="fas fa-shopping-bag"></i></div>
+            <div>Achats</div>
         </a>
         <a href="investir.html" class="nav-item">
-            <div class="nav-icon"><i class="fas fa-coins"></i></div>
+            <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
             <div>Investir</div>
         </a>
         <a href="solde.html" class="nav-item">
-            <div class="nav-icon"><i class="fas fa-user"></i></div>
-            <div>compte</div>
+            <div class="nav-icon"><i class="fas fa-user-circle"></i></div>
+            <div>Profil</div>
         </a>
     </div>
 
