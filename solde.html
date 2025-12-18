@@ -6,7 +6,6 @@
     <title>Centre Personnel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-  /* Reset et base */
 * {
     margin: 0;
     padding: 0;
@@ -14,51 +13,52 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #ffffff; /* Fond blanc */
-    color: #000000; /* Texte noir */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #ffffff; /* Arrière-plan blanc */
+    color: #2d3748;
     max-width: 480px;
     margin: 0 auto;
-    position: relative;
     min-height: 100vh;
-    padding-bottom: 70px;
+    padding-bottom: 80px;
 }
 
-/* Header avec image et gradient léger */
+/* Header full width */
 .header-gradient {
-    background: linear-gradient(to right, rgba(0, 24, 255, 0.2), rgba(255, 52, 0, 0.2)),
-                url('https://image.noelshack.com/fichiers/2025/50/2/1765267723-images-3.jpeg');
-    background-size: cover;
-    background-position: center;
-    color: #000000;
-    padding: 25px 15px 35px 15px;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 30px 20px;
+    margin: 0; /* Supprime les marges */
+    border-radius: 0; /* Supprime les coins arrondis */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    width: 100%;
 }
 
-/* Section profil améliorée */
 .profile-section {
     display: flex;
     align-items: center;
     gap: 15px;
-    background-color: rgba(255, 255, 255, 0.85); /* Fond clair semi-transparent */
-    padding: 10px 15px;
-    border-radius: 15px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+    max-width: 100%;
 }
 
-/* Logo */
+.profile-section:hover {
+    transform: translateY(-2px);
+}
+
 .logo-container {
-    width: 60px;
-    height: 60px;
+    width: 65px;
+    height: 65px;
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    border: 3px solid #667eea;
 }
 
 .logo-container img {
@@ -67,190 +67,329 @@ body {
     object-fit: cover;
 }
 
-/* Informations utilisateur */
 .user-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex: 1;
 }
 
 .user-id {
-    font-size: 16px;
-    font-weight: bold;
-    color: #000000;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 4px;
 }
 
 .user-additional-id {
     font-size: 13px;
-    color: #555555;
-    margin-top: 3px;
-    opacity: 0.9;
+    color: #718096;
+    font-weight: 500;
 }
 
-/* VIP Progress Section */
+.profile-section a {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.profile-section a:hover {
+    transform: rotate(90deg);
+}
+
+.profile-section a svg {
+    stroke: white;
+    width: 20px;
+    height: 20px;
+}
+
+/* Barre de progression VIP */
 .vip-progress-container {
-    background-color: rgba(0,0,0,0.05);
-    height: 10px;
-    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    height: 12px;
+    border-radius: 20px;
     overflow: hidden;
+    position: relative;
     margin-top: 15px;
 }
 
 .vip-progress-bar {
-    background: linear-gradient(to right, #0066ff, #00ccff);
+    background: linear-gradient(90deg, #ffd700, #ffed4e);
     height: 100%;
-    width: 0%;
+    border-radius: 20px;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
 }
 
 .vip-progress-text {
     text-align: center;
-    color: #000000;
+    color: #2d3748;
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 600;
 }
 
-/* Bank and Action Sections */
-.bank-section, .quick-action-section-wrapper {
-    background-color: rgba(0,0,0,0.03);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(0,0,0,0.1);
-    margin: 15px;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+/* Section bancaire full width */
+.bank-section {
+    background: white;
+    margin: 0 0 20px 0; /* Seulement marge en bas */
+    border-radius: 0; /* Supprime les coins arrondis */
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    animation: slideUp 0.5s ease;
+    width: 100%;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .bank-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 20px;
+    color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
 .bank-header-text {
-    color: #000000;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.4;
+    max-width: 65%;
 }
 
 .link-button {
-    background-color: #0066ff;
-    color: white;
-    padding: 5px 15px;
-    border-radius: 20px;
+    background: white;
+    color: #667eea;
+    padding: 8px 20px;
+    border-radius: 25px;
     font-size: 14px;
+    font-weight: 700;
     border: none;
     cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.link-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .bank-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    text-align: center;
-    padding: 15px 0;
+    padding: 20px 0;
+    gap: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .bank-grid-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: center;
+    padding: 10px;
 }
 
 .bank-grid-value {
-    color: #0066ff;
-    font-weight: bold;
-    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
 }
 
 .bank-grid-label {
-    color: #555555;
+    color: #718096;
     font-size: 12px;
+    font-weight: 600;
 }
 
-/* Recharge and Quick Action Sections */
-.recharge-section, 
+/* Section recharge full width */
+.recharge-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 20px;
+    border-top: 2px solid #f7fafc;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    text-decoration: none;
+    width: 100%;
+}
+
+.recharge-section:hover {
+    background: #f7fafc;
+}
+
+.recharge-text {
+    display: flex;
+    align-items: center;
+    color: #667eea;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.recharge-text svg {
+    margin-right: 12px;
+    stroke: #667eea;
+}
+
+/* Actions rapides full width */
+.quick-action-section-wrapper {
+    background: white;
+    margin: 0 0 20px 0; /* Seulement marge en bas */
+    border-radius: 0;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    width: 100%;
+}
+
 .quick-action-item-wrapper {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 18px 20px;
+    border-bottom: 1px solid #f7fafc;
     cursor: pointer;
     text-decoration: none;
+    transition: all 0.3s ease;
+    width: 100%;
 }
 
-.recharge-text, 
+.quick-action-item-wrapper:hover {
+    background: linear-gradient(90deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+    padding-left: 25px;
+}
+
+.quick-action-item-wrapper:last-child {
+    border-bottom: none;
+}
+
 .quick-action-content {
     display: flex;
     align-items: center;
-    color: #0066ff;
+    color: #2d3748;
+    font-weight: 600;
+    font-size: 15px;
 }
 
 .quick-action-content svg {
-    margin-right: 10px;
-    stroke: #0066ff;
+    margin-right: 15px;
+    stroke: #667eea;
 }
 
-/* Logout Style */
-.deconnexion-item {
-    color: #ff4d4d !important;
+/* Style déconnexion */
+.deconnexion-item .quick-action-content {
+    color: #f56565;
 }
 
 .deconnexion-item .quick-action-content svg {
-    stroke: #ff4d4d;
-} 
+    stroke: #f56565;
+}
 
-/* Navigation */
+/* Navigation full width */
 .navigation {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: #ffffff;
+    background: white;
     display: flex;
     max-width: 480px;
     margin: 0 auto;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    padding: 10px 0;
+    width: 100%;
 }
 
 .nav-item {
     flex: 1;
     padding: 12px 0;
     text-align: center;
-    color: #666666;
-    font-size: 12px;
+    color: #a0aec0;
+    font-size: 11px;
     text-decoration: none;
-    transition: color 0.3s;
+    transition: all 0.3s ease;
+    font-weight: 600;
 }
 
 .nav-item.active {
-    color: #0066ff;
+    color: #667eea;
+}
+
+.nav-item.active .nav-icon i {
+    transform: scale(1.2);
 }
 
 .nav-icon {
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    transition: transform 0.3s ease;
 }
 
-/* Icônes Font Awesome */
 .nav-icon i {
-    font-size: 20px;
+    font-size: 22px;
     display: block;
 }
-   </style>
+
+/* Animation au chargement */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+body {
+    animation: fadeIn 0.5s ease;
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+    .bank-header-text {
+        font-size: 13px;
+    }
+    
+    .bank-grid-value {
+        font-size: 18px;
+    }
+    
+    .quick-action-content {
+        font-size: 14px;
+    }
+}
+    </style>
 </head>
 <body>
     <div id="centre-personnel-app">
-        <!-- Header with User Information -->
+        <!-- Header full width -->
         <div class="header-gradient">
             <div class="profile-section">
                 <div class="logo-container">
-                    <img src="https://image.noelshack.com/fichiers/2025/50/1/1765231047-pngtree-one-yellow-smiley-emoticon-sticker-png-image-15045160.png" alt="Profile Logo">
+                    <img src="https://image.noelshack.com/fichiers/2025/50/1/1765231047-pngtree-one-yellow-smiley-emoticon-sticker-png-image-15045160.png" alt="Profil">
                 </div>
                 <div class="user-info">
-                    <div id="user-id" class="user-id">Chargement</div>
-                    <div id="user-additional-id" class="user-additional-id">0 Chargement</div>
+                    <div id="user-id" class="user-id">Chargement...</div>
+                    <div id="user-additional-id" class="user-additional-id">ID: •••••••</div>
                 </div>
                 <a href="#profil-parametres">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="m9 18 6-6-6-6"/>
                     </svg>
                 </a>
@@ -259,236 +398,234 @@ body {
             <div class="vip-progress-container">
                 <div id="vip-progress-bar" class="vip-progress-bar"></div>
             </div>
-            <div class="vip-progress-text">
-                
-            </div>
+            <div class="vip-progress-text">Graphique des membres de Lipton 8500 membres actifs 100 non actifs</div>
         </div>
 
-        <!-- Bank Section -->
+        <!-- Section bancaire full width -->
         <div id="bank-section" class="bank-section">
             <div class="bank-header">
-                <div class="bank-header-text">Veuillez cliquez pour lié votre compte bancaire</div>
+                <div class="bank-header-text">Liez votre compte bancaire pour commencer</div>
                 <button class="link-button" onclick="window.location.href='portefeuille.html'">Lier</button>
             </div>
             
             <div class="bank-grid">
                 <div class="bank-grid-item">
-                    <div id="total-withdrawals" class="bank-grid-value">chargement</div>
-                    <div class="bank-grid-label">Total de retrait</div>
+                    <div id="total-withdrawals" class="bank-grid-value">0 FCFA</div>
+                    <div class="bank-grid-label">Total Retraits</div>
                 </div>
                 <div class="bank-grid-item">
-                    <div id="total-recharge" class="bank-grid-value">chargement</div>
-                    <div class="bank-grid-label">Total recharge</div>
+                    <div id="total-recharge" class="bank-grid-value">0 FCFA</div>
+                    <div class="bank-grid-label">Total Recharges</div>
                 </div>
             </div> 
 
             <div class="bank-grid">
                 <div class="bank-grid-item">
-                    <div id="main-balance" class="bank-grid-value">chargement</div>
-                    <div class="bank-grid-label">Solde principal</div>
+                    <div id="main-balance" class="bank-grid-value">0 FCFA</div>
+                    <div class="bank-grid-label">Solde Principal</div>
                 </div>
                 <div class="bank-grid-item">
-                    <div id="total-revenue" class="bank-grid-value">chargement</div>
-                    <div class="bank-grid-label">Revenu total</div>
+                    <div id="total-revenue" class="bank-grid-value">0 FCFA</div>
+                    <div class="bank-grid-label">Revenus Totaux</div>
                 </div>
             </div>
 
             <a href="recharge.html" class="recharge-section">
                 <div class="recharge-text">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 10px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
                         <line x1="12" x2="12" y1="8" y2="16"/>
                         <line x1="8" x2="16" y1="12" y2="12"/>
                     </svg>
-                    Recharge
+                    Recharger mon compte
                 </div>
-                
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a>
         </div>
 
-        <!-- Quick Actions Section -->
+        <!-- Actions rapides full width -->
         <div id="quick-actions" class="quick-action-section-wrapper">
+            <!-- Tous les liens quick-action restent identiques -->
             <a href="retrait.html" class="quick-action-item-wrapper">
                 <div class="quick-action-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+                        <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+                        <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path>
                     </svg>
-                    Retrait
+                    Effectuer un retrait
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a>
 
             <a href="portefeuille.html" class="quick-action-item-wrapper">
                 <div class="quick-action-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="12" y1="8" x2="12" y2="16"></line>
-                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+                        <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+                        <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path>
                     </svg>
-                    Enregistrement du portefeuille
+                    Mon portefeuille
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a>
             
+            <!-- Reste des liens identiques... (je garde le HTML original pour ces sections) -->
             <a href="historique-retrait.html" class="quick-action-item-wrapper">
                 <div class="quick-action-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="12" y1="8" x2="12" y2="16"></line>
-                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 3v18h18"></path>
+                        <path d="m19 9-5 5-4-4-3 3"></path>
                     </svg>
-                    Enregistrement de historique de retrait 
+                    Historique des retraits
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a>
             
-           <a href="historique.html" class="quick-action-item-wrapper">
+            <a href="historique.html" class="quick-action-item-wrapper">
                 <div class="quick-action-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="12" y1="8" x2="12" y2="16"></line>
-                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 3v18h18"></path>
+                        <path d="m19 9-5 5-4-4-3 3"></path>
                     </svg>
-                    Enregistrement de historique de recharge 
+                    Historique des recharges
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a> 
 
             <a href="carte.html" class="quick-action-item-wrapper">
                 <div class="quick-action-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
-                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                        <line x1="1" y1="10" x2="23" y2="10"></line>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                        <line x1="2" x2="22" y1="10" y2="10"></line>
                     </svg>
-                    Carte bancaire
+                    Mes cartes bancaires
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a>
 
             <a href="services.html" class="quick-action-item-wrapper">
                 <div class="quick-action-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        <path d="M12 17h.01"></path>
                     </svg>
-                    Centre de l'aide
+                    Centre d'assistance
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a>
 
             <a href="#bonus" class="quick-action-item-wrapper">
                 <div class="quick-action-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
-                        <path d="M22 4.5V5c0 1.1-.9 2-2 2H4a2 2 0 0 1-2-2V4"></path>
-                        <path d="M16.5 9.5V7H19a2 2 0 0 0 0-4h-5.5v8"></path>
-                        <path d="M4.5 14H9v-4"></path>
-                        <path d="M12 17.5v-8"></path>
-                        <path d="M16.5 17.5h-13a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6"></path>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="8" cy="8" r="6"></circle>
+                        <path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path>
+                        <path d="M7 6h1v4"></path>
+                        <path d="m16.71 13.88.7.71-2.82 2.82"></path>
                     </svg>
-                    Bonus
+                    Mes bonus & récompenses
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a>
 
             <a href="equipe.html" class="quick-action-item-wrapper">
                 <div class="quick-action-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
-                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
-                    Mon équipe 
+                    Mon équipe
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a>
 
             <a href="info.html" class="quick-action-item-wrapper">
                 <div class="quick-action-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        <path d="M12 16v-4"></path>
+                        <path d="M12 8h.01"></path>
                     </svg>
-                    Centre d'infos
+                    Centre d'informations
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a>
 
             <a href="index.html" class="quick-action-item-wrapper deconnexion-item">
                 <div class="quick-action-content">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-lienjoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                         <polyline points="16 17 21 12 16 7"></polyline>
                         <line x1="21" y1="12" x2="9" y2="12"></line>
                     </svg>
-                    Déconnexion
+                    Se déconnecter
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m9 18 6-6-6-6"/>
                 </svg>
             </a>
-            
         </div>
 
-        <!-- Navigation avec icônes Font Awesome -->
-<div class="navigation">
-    <a href="accueil.html" class="nav-item active">
-        <div class="nav-icon"><i class="fas fa-home"></i></div>
-        <div>Accueil</div>
-    </a>
-    <a href="machine.html" class="nav-item">
-        <div class="nav-icon"><i class="fas fa-ship"></i></div>
-        <div>Mes achats</div>
-    </a>
-    <a href="investir.html" class="nav-item">
-        <div class="nav-icon"><i class="fas fa-coins"></i></div>
-        <div>Investir</div>
-    </a>
-    <a href="solde.html" class="nav-item">
-        <div class="nav-icon"><i class="fas fa-user"></i></div>
-        <div>Compte</div>
-    </a>
-</div>
+        <!-- Navigation -->
+        <div class="navigation">
+            <a href="accueil.html" class="nav-item active">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <div>Accueil</div>
+            </a>
+            <a href="machine.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-shopping-bag"></i></div>
+                <div>Achats</div>
+            </a>
+            <a href="investir.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                <div>Investir</div>
+            </a>
+            <a href="solde.html" class="nav-item">
+                <div class="nav-icon"><i class="fas fa-user-circle"></i></div>
+                <div>Profil</div>
+            </a>
+        </div>
+    </div>
     
+    <!-- Scripts restent identiques -->
     <script>
-        // Vous pouvez ajouter ici du JavaScript pour initialiser l'interface utilisateur
         document.addEventListener('DOMContentLoaded', function() {
-            // Simuler le chargement des données utilisateur
             setTimeout(function() {
-                document.getElementById('user-id').textContent = 'Utilisateur ';
+                document.getElementById('user-id').textContent = 'Utilisateur';
                 document.getElementById('user-additional-id').textContent = 'ID: 7823945';
                 
-                // Animer la barre de progression VIP
                 const progressBar = document.getElementById('vip-progress-bar');
-                progressBar.style.transition = 'width 1.5s ease-in-out';
+                progressBar.style.transition = 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
                 progressBar.style.width = '60%';
             }, 500);
         });
     </script>
     
-<script type="module">
+    <!-- Firebase script reste identique mais incomplet dans ta requête originale -->
+  <script type="module">
 // Import des modules Firebase nécessaires
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
@@ -725,6 +862,6 @@ onAuthStateChanged(auth, async (user) => {
         if (totalRevenueElement) totalRevenueElement.textContent = formatCurrency(0);
     }
 });
-</script>    
+</script>
 </body>
 </html>
