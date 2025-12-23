@@ -617,170 +617,128 @@ body {
             </a>
         </div>
     </div>
-    
-    <script type="module">
-        // Import des modules Firebase nécessaires
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-        import { 
-            getDatabase, 
-            ref, 
-            get, 
-            set, 
-            update,
-            onValue,
-            query,
-            orderByChild,
-            equalTo,
-            push
-        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getDatabase, ref, onValue, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
-        // Configuration Firebase Lipton
-        const firebaseConfig = {
-            apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
-            authDomain: "lipton-4f24a.firebaseapp.com",
-            databaseURL: "https://lipton-4f24a-default-rtdb.firebaseio.com",
-            projectId: "lipton-4f24a",
-            storageBucket: "lipton-4f24a.firebasestorage.app",
-            messagingSenderId: "1041905353994",
-            appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
-        };
+// --- Configuration Firebase ---
+const firebaseConfig = {
+    apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
+    authDomain: "lipton-4f24a.firebaseapp.com",
+    databaseURL: "https://lipton-4f24a-default-rtdb.firebaseio.com",
+    projectId: "lipton-4f24a",
+    storageBucket: "lipton-4f24a.firebasestorage.app",
+    messagingSenderId: "1041905353994",
+    appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
+};
 
-        // Initialisation Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
+// --- Initialisation Firebase ---
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
 
-        // --- Fonctions utilitaires ---
-        function formatCurrency(amount) {
-            return `${Number(amount).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} FCFA`;
-        }
+let currentUser = null;
 
-        function updateUserIdentifier(phoneNumber) {
-            const identifierElement = document.getElementById('user-id');
-            const additionalIdElement = document.getElementById('user-additional-id');
-            if (identifierElement && phoneNumber) {
-                const formattedNumber = phoneNumber.replace(/(d{2})(d{2})(d{2})(d{2})(d{2})/, '$1 $2 $3 $4 $5');
-                const additionalId = `*******${phoneNumber.slice(-2)} `;
-                identifierElement.textContent = formattedNumber;
-                additionalIdElement.textContent = additionalId;
-            }
-        }
+// --- Fonctions utilitaires ---
+function formatCurrency(amount) {
+    return `${Number(amount).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} FCFA`;
+}
 
-        function updateUserBalance(balance) {
-            const balanceElements = ['main-balance'];
-            balanceElements.forEach(elementId => {
-                const balanceElement = document.getElementById(elementId);
-                if (balanceElement) {
-                    balanceElement.textContent = formatCurrency(balance || 0);
-                }
+// --- Mise à jour des éléments ---
+function updateBalance(amount) {
+    const el = document.getElementById('main-balance');
+    if(el) el.textContent = formatCurrency(amount || 0);
+}
+
+function updateTotalRevenue(amount) {
+    const el = document.getElementById('total-revenue');
+    if(el) el.textContent = formatCurrency(amount || 0);
+}
+
+function updateTotalWithdrawals(amount, count) {
+    const totalEl = document.getElementById('total-withdrawals');
+    const countEl = document.getElementById('withdrawal-count');
+    if(totalEl) totalEl.textContent = formatCurrency(amount || 0);
+    if(countEl) countEl.textContent = `${count || 0} retrait${count === 1 ? '' : 's'}`;
+}
+
+function updateTotalRecharges(amount, count) {
+    const totalEl = document.getElementById('total-recharge');
+    const countEl = document.getElementById('recharge-count');
+    if(totalEl) totalEl.textContent = formatCurrency(amount || 0);
+    if(countEl) countEl.textContent = `${count || 0} recharge${count === 1 ? '' : 's'}`;
+}
+
+// --- Calcul du total des bénéfices VIP ---
+function calculateTotalVIPRevenue(userId) {
+    const investmentsRef = ref(db, `investments/${userId}`);
+    onValue(investmentsRef, snapshot => {
+        const investments = snapshot.val();
+        let totalRevenue = 0;
+        if(investments){
+            Object.values(investments).forEach(inv => {
+                if(inv.status === 'active' && inv.totalCollected) totalRevenue += inv.totalCollected;
             });
         }
+        updateTotalRevenue(totalRevenue);
+    });
+}
 
-        function updateTotalWithdrawals(totalWithdrawals) {
-            const totalWithdrawalsElement = document.getElementById('total-withdrawals');
-            if (totalWithdrawalsElement) {
-                totalWithdrawalsElement.textContent = formatCurrency(totalWithdrawals || 0);
-            }
+// --- Calcul des retraits ---
+function calculateTotalWithdrawals(userId) {
+    const withdrawalsRef = ref(db, `users/${userId}/withdrawalHistory`);
+    onValue(withdrawalsRef, snapshot => {
+        const history = snapshot.val();
+        let totalAmount = 0;
+        let count = 0;
+        if(history){
+            const arr = Object.values(history);
+            totalAmount = arr.reduce((sum, w) => sum + (w.amount || 0), 0);
+            count = arr.length;
         }
+        updateTotalWithdrawals(totalAmount, count);
+    });
+}
 
-        function updateWithdrawalCount(count) {
-            const withdrawalCountElement = document.getElementById('withdrawal-count');
-            if (withdrawalCountElement) {
-                withdrawalCountElement.textContent = `${count || 0} retrait${count === 1 ? '' : 's'}`;
-            }
+// --- Calcul des recharges ---
+function calculateTotalRecharges(userId) {
+    const transactionsRef = ref(db, 'transactions');
+    const userQuery = query(transactionsRef, orderByChild('userId'), equalTo(currentUser?.uid));
+    onValue(userQuery, snapshot => {
+        const transactions = snapshot.val();
+        let totalAmount = 0;
+        let count = 0;
+        if(transactions){
+            const successful = Object.values(transactions).filter(t => t.status === 'success');
+            totalAmount = successful.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+            count = successful.length;
         }
+        updateTotalRecharges(totalAmount, count);
+    });
+}
 
-        function updateTotalRecharges(totalRecharges) {
-            const totalRechargesElement = document.getElementById('total-recharge');
-            if (totalRechargesElement) {
-                totalRechargesElement.textContent = formatCurrency(totalRecharges || 0);
-            }
-        }
-
-        function updateRechargeCount(count) {
-            const rechargeCountElement = document.getElementById('recharge-count');
-            if (rechargeCountElement) {
-                rechargeCountElement.textContent = `${count || 0} recharge${count === 1 ? '' : 's'}`;
-            }
-        }
-
-        // --- Calcul des retraits ---
-        function calculateAndDisplayTotalWithdrawals(userId) {
-            const withdrawalHistoryRef = ref(database, `users/${userId}/withdrawalHistory`);
-            onValue(withdrawalHistoryRef, (snapshot) => {
-                const history = snapshot.val();
-                const totalWithdrawalsAmount = history 
-                    ? Object.values(history).reduce((total, w) => total + (w.amount || 0), 0)
-                    : 0;
-                const withdrawalCount = history ? Object.keys(history).length : 0;
-
-                updateTotalWithdrawals(totalWithdrawalsAmount);
-                updateWithdrawalCount(withdrawalCount);
-            });
-        }
-
-        // --- Calcul des recharges ---
-        function calculateTotalRecharges(userId) {
-            const rechargesRef = ref(database, 'transactions');
-            const userRechargesQuery = query(rechargesRef, orderByChild('userId'), equalTo(userId));
-            
-            onValue(userRechargesQuery, (snapshot) => {
-                const transactions = snapshot.val();
-                const totalRecharges = transactions
-                    ? Object.values(transactions)
-                        .filter(tr => tr.status === 'success')
-                        .reduce((total, tr) => total + (parseFloat(tr.amount) || 0), 0)
-                    : 0;
-                const rechargeCount = transactions
-                    ? Object.values(transactions).filter(tr => tr.status === 'success').length
-                    : 0;
-
-                updateTotalRecharges(totalRecharges);
-                updateRechargeCount(rechargeCount);
-            });
-        }
-
-        // --- Gestion de l'authentification ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                try {
-                    const userRef = ref(database, 'users/' + user.uid);
-                    const snapshot = await get(userRef);
-                    const userData = snapshot.val();
-
-                    if (userData) {
-                        if (userData.phoneNumber) updateUserIdentifier(userData.phoneNumber);
-                        if (userData.balance !== undefined) updateUserBalance(userData.balance);
-
-                        // Calculs des compteurs
-                        calculateAndDisplayTotalWithdrawals(user.uid);
-                        calculateTotalRecharges(user.uid);
-                    }
-                } catch (error) {
-                    console.error("Erreur lors de la récupération des données:", error);
-                }
-            } else {
-                // Utilisateur non connecté
-                document.getElementById('user-id').textContent = 'Non connecté';
-                updateUserBalance(0);
-                updateTotalWithdrawals(0);
-                updateWithdrawalCount(0);
-                updateTotalRecharges(0);
-                updateRechargeCount(0);
-            }
+// --- Authentification ---
+onAuthStateChanged(auth, user => {
+    if(user){
+        currentUser = user;
+        const userRef = ref(db, `users/${user.uid}`);
+        onValue(userRef, snapshot => {
+            const data = snapshot.val();
+            updateBalance(data?.balance || 0);
         });
 
-        // Animation initiale
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                const progressBar = document.getElementById('vip-progress-bar');
-                if (progressBar) {
-                    progressBar.style.transition = 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
-                    progressBar.style.width = '60%';
-                }
-            }, 500);
-        });
-    </script>
+        calculateTotalVIPRevenue(user.uid);
+        calculateTotalWithdrawals(user.uid);
+        calculateTotalRecharges(user.uid);
+    } else {
+        updateBalance(0);
+        updateTotalRevenue(0);
+        updateTotalWithdrawals(0,0);
+        updateTotalRecharges(0,0);
+        window.location.href = 'login.html';
+    }
+});
+</script>
 </body>
     </html>
