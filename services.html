@@ -1,118 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Service Client</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body { 
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: flex-end;
-            min-height: 100vh;
-            background-color: #f0f0f0;
-        }
-        .container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-        }
-        #messageBouton {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            font-size: 24px;
-        }
-        #messageBouton {
-            background-color: #4a4a4a;
-            color: white;
-        }
-        #messageBouton:hover {
-            background-color: #2a2a2a;
-        }
-        #contactMenu {
-            position: absolute;
-            bottom: 70px;
-            right: 0;
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            width: 250px;
-        }
-        .contact-button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 15px;
-            font-weight: bold;
-        }
-        .contact-button i {
-            font-size: 24px;
-        }
-        #telegramBtn {
-            background-color: #0088cc;
-            color: white;
-        }
-        #whatsappBtn {
-            background-color: #25D366;
-            color: white;
-        }
-        #serviceBtn {
-            background-color: #6f42c1;
-            color: white;
-        }
-        .contact-button:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-        }
-        #messageBouton i {
-            font-size: 24px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service client</title>
+  <!-- Icônes Telegram -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f2f3f7;
+      color: #333;
+    }
+
+    .page {
+      max-width: 420px;
+      margin: 0 auto;
+      background-color: #fff;
+      min-height: 100vh;
+      box-shadow: 0 0 10px rgba(0,0,0,0.03);
+    }
+
+    /* Bandeau image + texte - OPTIMISÉ POUR NOUVELLE IMAGE */
+    .hero {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero img {
+      width: 100%;
+      height: 320px; /* Ajusté pour nouvelle image complète */
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .hero-overlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 18px; /* Ajusté pour la nouvelle hauteur */
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      background: linear-gradient(transparent, rgba(0,0,0,0.3) 50%);
+      padding: 10px 0;
+    }
+    .hero-time {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .hero-text {
+      font-size: 12px;
+    }
+
+    /* Liste des options - UN SEUL BOUTON */
+    .list {
+      margin-top: 8px;
+      background-color: #fff;
+      border-top: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .list-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    .list-item:last-child {
+      border-bottom: none;
+    }
+    .list-item:active {
+      transform: scale(0.98);
+      background: #f7f9ff;
+    }
+
+    .tg-icon-wrap {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #2aa7e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      margin-right: 10px;
+      flex-shrink: 0;
+      box-shadow: 0 3px 6px rgba(42,167,232,0.35);
+    }
+
+    .item-text-main {
+      flex: 1;
+      font-size: 14px;
+    }
+
+    .item-arrow {
+      color: #c0c0c0;
+      font-size: 16px;
+    }
+
+    /* Texte d'information */
+    .info {
+      padding: 12px 12px 20px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #444;
+    }
+    .info p {
+      margin-bottom: 5px;
+    }
+    .info p span.num {
+      font-weight: 600;
+      margin-right: 4px;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <button id="messageBouton">
-            <i class="fas fa-comment-dots"></i>
-        </button>
-        <div id="contactMenu">
-            <button id="telegramBtn" class="contact-button" onclick="window.open('https://t.me/+2250712755002', '_blank')">
-                <i class="fab fa-telegram-plane"></i> 
-                Telegram
-            </button>
-            
-                
-            </button>
-        </div>
+<div class="page">
+
+  <!-- NOUVELLE IMAGE PARFAITEMENT AFFICHÉE -->
+  <div class="hero">
+    <img src="https://image.noelshack.com/fichiers/2025/52/4/1766620576-file-0000000010a871f49bfce219d9103bb5.jpg"
+         alt="Service client">
+    <div class="hero-overlay">
+      <div class="hero-time">9:00-20:00</div>
+      <div class="hero-text">Temps de service client en ligne</div>
     </div>
+  </div>
 
-    <script>
-        const messageBouton = document.getElementById('messageBouton');
-        const contactMenu = document.getElementById('contactMenu');
-        let menuOuvert = false;
+  <!-- BOUTON Service Client -->
+  <div class="list">
+    <div class="list-item" onclick="window.location.href='https://t.me/+2250712755002';">
+      <div class="tg-icon-wrap"><i class="bi bi-telegram"></i></div>
+      <div class="item-text-main">Veuillez contacter le service client en cas d'aide</div>
+      <div class="item-arrow">&gt;</div>
+    </div>
+  </div>
 
-        messageBouton.addEventListener('click', () => {
-            menuOuvert = !menuOuvert;
-            contactMenu.style.display = menuOuvert ? 'flex' : 'none';
-        });
-    </script>
+  <!-- Texte en bas -->
+  <div class="info">
+    <p><span class="num">1.</span>Si vous ne parvenez pas à accéder à la page Telegram officielle mentionnée ci‑dessus, veuillez essayer avec un autre navigateur.</p>
+    <p><span class="num">2.</span>Pour toute question concernant notre plateforme, veuillez contacter notre service client en ligne. Nous répondrons à toutes vos questions.</p>
+    <p><span class="num">3.</span>Si notre service client en ligne ne répond pas immédiatement à votre message, veuillez patienter. Ceci est dû à un volume élevé de messages. Nous vous répondrons dès que possible. Merci de votre compréhension et de votre soutien&nbsp;!</p>
+    <p><span class="num">4.</span>Si vous souhaitez gagner plus d'argent, rejoignez notre chaîne Telegram officielle&nbsp;!</p>
+  </div>
+
+</div>
 </body>
 </html>
