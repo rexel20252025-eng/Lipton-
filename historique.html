@@ -535,8 +535,7 @@ h1 i {
         <div id="pagination" class="pagination"></div>
     </div>
     
-         
- <script type="module">
+<script type="module">
 // --- Import Firebase ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { 
@@ -554,7 +553,8 @@ import {
     query, 
     orderByChild, 
     equalTo, 
-    onValue 
+    onValue,
+    runTransaction 
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 
@@ -574,6 +574,55 @@ try {
     const auth = getAuth(app);
     const db = getDatabase(app);
     const creditedTransactions = new Set();
+    const processedBonuses = new Set();
+
+    // --- Crédite le bonus parrain 20% ---
+    async function creditReferralBonus(userId, amount, transactionId) {
+        if (processedBonuses.has(`${userId}-${transactionId}`)) return;
+
+        try {
+            const userRef = ref(db, `users/${userId}`);
+            const snapshot = await get(userRef);
+
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                if (userData.referredBy) {
+                    const referrerUid = userData.referredBy;
+                    const bonusAmount = parseFloat(amount) * 0.20; // 20% bonus
+
+                    // Créditer le parrain
+                    const referrerRef = ref(db, `users/${referrerUid}`);
+                    await runTransaction(referrerRef, (currentData) => {
+                        if (!currentData) return currentData;
+                        return {
+                            ...currentData,
+                            solde: (currentData.solde || 0) + bonusAmount,
+                            totalReferralBonus: (currentData.totalReferralBonus || 0) + bonusAmount
+                        };
+                    });
+
+                    // Marquer la transaction comme bonus traité
+                    processedBonuses.add(`${userId}-${transactionId}`);
+
+                    // Log du bonus
+                    const bonusLogRef = ref(db, `referralBonusLogs/${referrerUid}`);
+                    await update(bonusLogRef, {
+                        [`bonus_${Date.now()}`]: {
+                            amount: bonusAmount,
+                            fromMemberId: userId,
+                            transactionId: transactionId,
+                            rechargeAmount: parseFloat(amount),
+                            timestamp: new Date().toISOString()
+                        }
+                    });
+
+                    console.log(`✅ Bonus parrain ${bonusAmount} FCFA crédité pour transaction ${transactionId}`);
+                }
+            }
+        } catch (error) {
+            console.error('Erreur crédit bonus parrain:', error);
+        }
+    }
 
     // --- Met à jour le solde utilisateur ---
     async function updateUserBalance(userId, amount, transactionId) {
@@ -594,6 +643,9 @@ try {
 
                 await update(ref(db), updates);
                 creditedTransactions.add(transactionId);
+
+                // Créditer bonus parrain APRÈS crédit utilisateur
+                await creditReferralBonus(userId, amount, transactionId);
             }
         } catch (error) {
             console.error('Erreur de mise à jour du solde:', error);
@@ -688,7 +740,7 @@ try {
         return historyItem;
     }
 
-    // --- Affichage des transactions ---
+    // --- Affichage des transactions (inchangé) ---
     function displayTransactions(transactions, userId) {
         const historyList = document.getElementById('historyList');
         if (!historyList) return;
@@ -727,7 +779,6 @@ try {
             historyList.insertBefore(fragment, historyList.firstChild);
         }
 
-        // Supprimer les anciennes transactions non présentes
         const currentIds = new Set(userTransactions.map(t => t.transactionId));
         Array.from(historyList.children).forEach(child => {
             if (!currentIds.has(child.dataset.transactionId)) child.remove();
