@@ -3,150 +3,235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Historique de Retrait - Schweppes</title>
+<title>Historique des retraits</title>
 <style>
-body { font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif; background:#fff; color:#333; margin:0; padding:0; }
-.header { display:flex; align-items:center; margin-bottom:20px; padding:15px; border-bottom:2px solid #f0f0f0; }
-.back-arrow { font-size:24px; cursor:pointer; margin-right:15px; color:#666; transition: color 0.3s; }
-.back-arrow:hover { color:#000; }
-.header-title { font-size:18px; font-weight:600; color:#333; }
-
-#history-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 0 10px;
+:root {
+    --primary-color: #4A90E2;
+    --primary-light: #D0E6FA;
+    --accent-color: #FF6B6B;
+    --success-color: #4CAF50;
+    --text-color: #333;
+    --text-light: #666;
+    --background-color: #F0F4F8;
+    --card-background: #fff;
+    --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --transition-speed: 0.3s;
 }
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height:1.5;
+}
+
+.header {
+    padding: 16px;
+    background-color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top:0;
+    z-index:100;
+    color:white;
+    font-weight:600;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    border-bottom-left-radius:12px;
+    border-bottom-right-radius:12px;
+}
+
+.back-arrow {
+    width:36px; height:36px;
+    display:flex; justify-content:center; align-items:center;
+    border-radius:50%; margin-right:12px; cursor:pointer;
+    transition: background var(--transition-speed);
+}
+
+.back-arrow:hover { background-color: rgba(255,255,255,0.2); }
+
+.header h1 { font-size:20px; }
+
+#history-container { padding:16px; max-width:480px; margin:0 auto; }
 
 .card {
-    background:#fff;
-    border:1px solid #e5e5e5;
+    background: var(--card-background);
+    margin-bottom:16px;
+    padding:18px;
     border-radius:12px;
-    padding:12px 15px;
-    margin:10px 0;
-    box-shadow:0 1px 4px rgba(0,0,0,0.04);
-    transition: box-shadow 0.3s, transform 0.2s;
+    box-shadow: var(--card-shadow);
+    border-left: 5px solid var(--primary-color);
+    transition: all var(--transition-speed);
 }
 
-.card:hover { box-shadow:0 2px 6px rgba(0,0,0,0.08); transform:translateY(-1px); }
+.card:hover { transform: translateY(-3px); box-shadow:0 6px 16px rgba(0,0,0,0.15); }
 
-.row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #f5f5f5; }
-.row:last-child { border-bottom:none; }
-.label { font-size:14px; color:#666; font-weight:500; }
-.value { font-size:14px; color:#333; font-weight:600; text-align:right; }
+.row { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.row:last-child { margin-bottom:0; }
 
-.badge { padding:3px 10px; border-radius:20px; font-size:12px; font-weight:600; text-transform:capitalize; }
-.badge-success { background-color:#d4edda; color:#155724; }
-.badge-pending { background-color:#fff3cd; color:#856404; }
-.badge-failed { background-color:#f8d7da; color:#721c24; }
+.label { font-size:13px; color: var(--text-light); }
+.value { font-size:14px; font-weight:600; }
 
-.no-history { text-align:center; padding:40px 20px; color:#999; font-size:16px; }
+.blue-text { color: var(--primary-color); }
+.orange-text { color: var(--accent-color); }
+.green-text { color: var(--success-color); }
+
+.badge {
+    padding: 3px 8px;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:600;
+    color:white;
+    text-transform:capitalize;
+}
+
+.badge-success { background-color: var(--success-color); }
+.badge-pending { background-color: var(--accent-color); }
+.badge-failed { background-color: #FF3B30; }
+
+.no-history {
+    text-align:center;
+    padding:40px 20px;
+    color: var(--text-light);
+    font-size:15px;
+    background: var(--card-background);
+    border-radius:12px;
+    box-shadow: var(--card-shadow);
+}
+
+/* Responsive */
+@media(max-width:480px){
+    .card{ padding:14px; }
+    .label{ font-size:12px; }
+    .value{ font-size:13px; }
+    .header h1{ font-size:18px; }
+}
 </style>
 </head>
 <body>
 <div class="header">
-<span class="back-arrow" onclick="history.back()">←</span>
-<div class="header-title">Schweppes  Historique deretrait</div>
+    <div class="back-arrow"><span>&larr;</span></div>
+    <h1>Historique des retraits</h1>
 </div>
 
-<div id="history-container">
-<div class="no-history">Chargement...</div>
-</div>
+<div id="history-container"></div>
+
 
 <script type="module">
+/* ===============================
+   Import Firebase Modules
+=============================== */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { 
+    getAuth, 
+    onAuthStateChanged, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword 
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 
-// --- CONFIG FIREBASE ---
+/* ===============================
+   Firebase Configuration
+=============================== */
 const firebaseConfig = {
-  apiKey: "AIzaSyATz_ogu08DUoKSYKy6t2cHWdleUD-Fbrk",
-  authDomain: "schweppes-15df3.firebaseapp.com",
-  databaseURL: "https://schweppes-15df3-default-rtdb.firebaseio.com",
-  projectId: "schweppes-15df3",
-  storageBucket: "schweppes-15df3.firebasestorage.app",
-  messagingSenderId: "1011077098372",
-  appId: "1:1011077098372:web:64f9ad3a8e93f68c070bd1"
+    apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
+    authDomain: "lipton-4f24a.firebaseapp.com",
+    databaseURL: "https://lipton-4f24a-default-rtdb.firebaseio.com",
+    projectId: "lipton-4f24a",
+    storageBucket: "lipton-4f24a.appspot.com",
+    messagingSenderId: "1041905353994",
+    appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
 };
 
-// --- Init Firebase ---
+/* ===============================
+   Initialize Firebase
+=============================== */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getDatabase(app);
-const USD_TO_FCFA = 587;
+const database = getDatabase(app);
 
-// --- Utils ---
-function formatDualCurrency(amount) {
-    const usd = (amount / USD_TO_FCFA).toFixed(2);
-    return { fcfa: Math.round(amount).toLocaleString(), usd: parseFloat(usd).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) };
+/* ===============================
+   Helper Functions
+=============================== */
+function formatAmount(amount) {
+    return `${amount.toLocaleString('fr-FR')} FCFA`;
 }
 
-function formatDate(ts) {
-    if(!ts) return "Date inconnue";
-    const date = new Date(Number(ts));
-    return date.toLocaleString('fr-FR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+function formatDate(timestamp) {
+    return new Date(timestamp).toLocaleString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 }
 
 function statusBadge(status) {
-    const s = (status || '').toLowerCase();
-    if(s === 'success' || s === 'payé' || s === 'succès' || s === 'terminé') return `<span class="badge badge-success">${status}</span>`;
-    if(s === 'pending' || s === 'en attente' || s === 'traitement bancaire') return `<span class="badge badge-pending">${status}</span>`;
-    return `<span class="badge badge-failed">${status}</span>`;
+    switch(status.toLowerCase()) {
+        case 'terminé':
+            return `<span class="badge badge-success">${status}</span>`;
+        case 'en attente':
+            return `<span class="badge badge-pending">${status}</span>`;
+        default:
+            return `<span class="badge badge-failed">${status}</span>`;
+    }
 }
 
+/* ===============================
+   Create Withdrawal Card
+=============================== */
 function createWithdrawalCard(w) {
-    const amt = formatDualCurrency(w.amount || 0);
-    const fees = formatDualCurrency(w.fees || 0);
-    const net = formatDualCurrency((w.amount || 0) - (w.fees || 0));
-    const dateStr = formatDate(w.date || w.timestamp || Date.now());
-
+    const amountAfterFees = w.amount - (w.fees || 0);
     return `
     <div class="card">
-        <div class="row"><span class="label">Montant retiré :</span><span class="value">− ${amt.fcfa} FCFA / $${amt.usd}</span></div>
-        <div class="row"><span class="label">Frais d'opération :</span><span class="value">− ${fees.fcfa} FCFA / $${fees.usd}</span></div>
-        <div class="row"><span class="label">Montant à recevoir :</span><span class="value orange-text">${net.fcfa} FCFA / $${net.usd}</span></div>
-        <div class="row"><span class="label">Statut :</span><span class="value">${statusBadge(w.status)}</span></div>
-        <div class="row"><span class="label">Date de retrait :</span><span class="value">${dateStr}</span></div>
+        <div class="row">
+            <span class="label">Montant retiré</span>
+            <span class="value">− ${formatAmount(w.amount)}</span>
+        </div>
+        <div class="row">
+            <span class="label">Date de retrait</span>
+            <span class="value">${formatDate(w.timestamp)}</span>
+        </div>
+        <div class="row">
+            <span class="label">Statut</span>
+            <span class="value">${statusBadge(w.status)}</span>
+        </div>
+        <div class="row">
+            <span class="label">Montant à recevoir</span>
+            <span class="value orange-text">${formatAmount(amountAfterFees)}</span>
+        </div>
     </div>`;
 }
 
-// --- Display history ---
-function displayWithdrawalHistory(history){
+/* ===============================
+   Display Withdrawal History
+=============================== */
+function displayWithdrawalHistory(history) {
     const container = document.getElementById('history-container');
-    if(!history || Object.keys(history).length === 0){
+    if(!history || Object.keys(history).length === 0) {
         container.innerHTML = '<div class="no-history">Aucun retrait disponible</div>';
         return;
     }
+
+    // Sort by timestamp descending (plus récent en haut)
+    const sortedHistory = Object.entries(history)
+        .sort(([,a],[,b]) => b.timestamp - a.timestamp);
+
     container.innerHTML = '';
-
-    const todayStr = new Date().toDateString();
-
-    Object.entries(history)
-        .sort(([,a],[,b]) => {
-            const aDateObj = new Date(a.date || a.timestamp);
-            const bDateObj = new Date(b.date || b.timestamp);
-
-            const aDateStr = aDateObj.toDateString();
-            const bDateStr = bDateObj.toDateString();
-
-            // 1️⃣ Les retraits d'aujourd'hui en haut
-            if(aDateStr === todayStr && bDateStr !== todayStr) return -1;
-            if(bDateStr === todayStr && aDateStr !== todayStr) return 1;
-
-            // 2️⃣ Si même jour, tri par timestamp (heure) descendant
-            if(aDateStr === bDateStr) return (b.timestamp || b.date) - (a.timestamp || a.date);
-
-            // 3️⃣ Sinon tri normal par order ou date descendant
-            return (b.order || b.date) - (a.order || a.date);
-        })
-        .forEach(([,w]) => {
-            container.innerHTML += createWithdrawalCard(w);
-        });
+    sortedHistory.forEach(([,w]) => {
+        container.innerHTML += createWithdrawalCard(w);
+    });
 }
 
-// --- Auth ---
+/* ===============================
+   Firebase Auth State
+=============================== */
 onAuthStateChanged(auth, user => {
-    if(user){
-        const historyRef = ref(db, `users/${user.uid}/withdrawalHistory`);
+    if(user) {
+        const historyRef = ref(database, `users/${user.uid}/withdrawalHistory`);
         onValue(historyRef, snapshot => {
             displayWithdrawalHistory(snapshot.val());
         });
@@ -155,9 +240,12 @@ onAuthStateChanged(auth, user => {
     }
 });
 
-// --- Back button ---
-document.querySelector('.back-arrow')?.addEventListener('click', () => history.back());
+/* ===============================
+   Back Button Handler
+=============================== */
+document.querySelector('.back-arrow')?.addEventListener('click', () => {
+    history.back();
+});
 </script>
-
 </body>
 </html>
