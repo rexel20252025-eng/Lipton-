@@ -7,9 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ==========================================================================
-           RESET & BASE - COMPACT
-        ========================================================================== */
         * {
             margin: 0;
             padding: 0;
@@ -20,14 +17,11 @@
             font-family: 'Poppins', system-ui, sans-serif;
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             min-height: 100vh;
-            padding: 12px 12px 100px 12px; /* Padding bottom pour navigation */
+            padding: 12px 12px 100px 12px;
             color: #1e293b;
             font-size: 14px;
         }
 
-        /* ==========================================================================
-           HEADER - RÉDUIT
-        ========================================================================== */
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -42,9 +36,6 @@
             margin-bottom: 6px;
         }
 
-        /* ==========================================================================
-           GRID COMPACT
-        ========================================================================== */
         .investment-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -53,9 +44,6 @@
             margin: 0 auto;
         }
 
-        /* ==========================================================================
-           CARDS COMPACTES
-        ========================================================================== */
         .investment-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(15px);
@@ -72,7 +60,6 @@
             box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.12);
         }
 
-        /* Image réduite */
         .card-image {
             height: 140px;
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15)),
@@ -82,7 +69,6 @@
             position: relative;
         }
 
-        /* Status badge compact */
         .status-badge {
             position: absolute;
             top: 12px;
@@ -96,7 +82,6 @@
             z-index: 2;
         }
 
-        /* Content compact */
         .card-content {
             padding: 20px;
         }
@@ -110,7 +95,6 @@
             margin-bottom: 12px;
         }
 
-        /* Info rows compactes */
         .info-row {
             display: flex;
             align-items: center;
@@ -135,7 +119,6 @@
             color: #334155;
         }
 
-        /* Stats section compacte */
         .stats-section {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             border-radius: 14px;
@@ -155,7 +138,6 @@
             font-weight: 700;
         }
 
-        /* Bouton compact */
         .invest-button {
             width: 100%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -183,7 +165,6 @@
             transform: none;
         }
 
-        /* Footer compact */
         .card-footer {
             padding: 14px 20px;
             background: rgba(248, 250, 252, 0.8);
@@ -205,9 +186,6 @@
             color: #ef4444 !important;
         }
 
-        /* ==========================================================================
-           NOTIFICATION COMPACTE
-        ========================================================================== */
         .notification {
             position: fixed;
             top: 15px;
@@ -221,9 +199,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
-        /* ==========================================================================
-           NAVIGATION AMÉLIORÉE - NOUVELLE VERSION
-        ========================================================================== */
         .navigation {
             position: fixed;
             bottom: 0;
@@ -274,9 +249,6 @@
             display: block;
         }
 
-        /* ==========================================================================
-           RESPONSIVE
-        ========================================================================== */
         @media (max-width: 480px) {
             body { padding: 10px 8px 100px; }
             .investment-grid { gap: 14px; }
@@ -284,7 +256,6 @@
             .info-row { padding: 10px 12px; }
         }
 
-        /* Loading spinner */
         .loading-spinner {
             display: inline-block;
             width: 16px;
@@ -301,45 +272,42 @@
     </style>
 </head>
 <body>
-    <!-- Notification -->
     <div class="notification" id="notification"></div>
 
-    <!-- Header -->
     <div class="header">
         <h1 class="header-title">Faîte travailler ton argent</h1>
     </div>
 
-    <!-- Grid principal - TOUTES LES CARTES -->
     <div class="investment-grid">
-        <!-- LIPTON 1 -->
+        <!-- VIP-1 -->
         <div class="investment-card" data-house-id="1">
             <div class="card-image"></div>
             <div class="status-badge">VIP-1</div>
             
             <div class="card-content">
-                <h2 class="card-title">VIP- 1</h2>
+                <h2 class="card-title">VIP-1</h2>
                 
                 <div class="info-row">
                     <i class="fas fa-coins info-icon"></i>
-                    <div class="info-text">Montant à investir : 5.500 FCFA</div>
+                    <div class="info-text">Montant à investir : 5.000 FCFA</div>
                 </div>
 
                 <div class="info-row">
                     <i class="fas fa-chart-line info-icon"></i>
-                    <div class="info-text">Revenus quotidien: 1.050 FCFA</div>
+                    <div class="info-text">Revenus quotidien: 1.200 FCFA</div>
                 </div>
 
                 <div class="info-row">
                     <i class="fas fa-clock info-icon"></i>
-                    <div class="info-text">Cycle: 20 jours</div>
+                    <div class="info-text">Cycle: 31 jours</div>
                 </div>
 
                 <div class="stats-section">
-                    <div class="revenue-total"></div>
-                    <div class="profit-net">Revenus total: 21.000 FCFA</div>
+                    <div class="revenue-total">Revenus total: 37.200 FCFA</div>
+                    <div class="profit-net">Bénéfices: +32.200 FCFA</div>
                 </div>
 
-                <button class="invest-button" id="btn1" onclick="investProduct(1, 5500)">
+                <button class="invest-button" id="btn1" onclick="investProduct(1, 5000)">
                     <i class="fas fa-rocket"></i> Investir
                 </button>
             </div>
@@ -350,17 +318,17 @@
             </div>
         </div>
 
-        <!-- LIPTON 2 -->
+        <!-- VIP-2 -->
         <div class="investment-card" data-house-id="2">
             <div class="card-image"></div>
             <div class="status-badge">VIP-2</div>
             
             <div class="card-content">
-                <h2 class="card-title">VIP- 2</h2>
+                <h2 class="card-title">VIP-2</h2>
                 
                 <div class="info-row">
                     <i class="fas fa-coins info-icon"></i>
-                    <div class="info-text">Montant à investir: 10.500 FCFA</div>
+                    <div class="info-text">Montant à investir: 10.000 FCFA</div>
                 </div>
 
                 <div class="info-row">
@@ -370,15 +338,15 @@
 
                 <div class="info-row">
                     <i class="fas fa-clock info-icon"></i>
-                    <div class="info-text">18 jours</div>
+                    <div class="info-text">Cycle: 31 jours</div>
                 </div>
 
                 <div class="stats-section">
-                    <div class="revenue-total"></div>
-                    <div class="profit-net">Revenus total: 45.000 FCFA</div>
+                    <div class="revenue-total">Revenus total: 77.500 FCFA</div>
+                    <div class="profit-net">Bénéfices: +67.500 FCFA</div>
                 </div>
 
-                <button class="invest-button" id="btn2" onclick="investProduct(2, 10500)">
+                <button class="invest-button" id="btn2" onclick="investProduct(2, 10000)">
                     <i class="fas fa-rocket"></i> Investir
                 </button>
             </div>
@@ -389,7 +357,7 @@
             </div>
         </div>
 
-        <!-- LIPTON 3 -->
+        <!-- VIP-3 -->
         <div class="investment-card" data-house-id="3">
             <div class="card-image"></div>
             <div class="status-badge">VIP-3</div>
@@ -399,25 +367,25 @@
                 
                 <div class="info-row">
                     <i class="fas fa-coins info-icon"></i>
-                    <div class="info-text"> Montant à investir: 30.000 FCFA</div>
+                    <div class="info-text">Montant à investir: 30.000 FCFA</div>
                 </div>
 
                 <div class="info-row">
                     <i class="fas fa-chart-line info-icon"></i>
-                    <div class="info-text">Revenus quotidien: 5.500 FCFA</div>
+                    <div class="info-text">Revenus quotidien: 5.000 FCFA</div>
                 </div>
 
                 <div class="info-row">
                     <i class="fas fa-clock info-icon"></i>
-                    <div class="info-text">Cycle: 15 jours</div>
+                    <div class="info-text">Cycle: 31 jours</div>
                 </div>
 
                 <div class="stats-section">
-                    <div class="revenue-total"></div>
-                    <div class="profit-net">Revenus total: 82.500 FCFA</div>
+                    <div class="revenue-total">Revenus total: 155.000 FCFA</div>
+                    <div class="profit-net">Bénéfices: +125.000 FCFA</div>
                 </div>
 
-                <button class="invest-button" id="btn3" onclick="investProduct(3, 20500)">
+                <button class="invest-button" id="btn3" onclick="investProduct(3, 30000)">
                     <i class="fas fa-rocket"></i> Investir
                 </button>
             </div>
@@ -428,7 +396,7 @@
             </div>
         </div>
 
-        <!-- LIPTON 5 -->
+        <!-- VIP-4 -->
         <div class="investment-card" data-house-id="5">
             <div class="card-image"></div>
             <div class="status-badge">VIP-4</div>
@@ -443,17 +411,17 @@
 
                 <div class="info-row">
                     <i class="fas fa-chart-line info-icon"></i>
-                    <div class="info-text">Revenus quotidien: 26.000 FCFA</div>
+                    <div class="info-text">Revenus quotidien: 17.000 FCFA</div>
                 </div>
 
                 <div class="info-row">
                     <i class="fas fa-clock info-icon"></i>
-                    <div class="info-text">15 jours</div>
+                    <div class="info-text">Cycle: 31 jours</div>
                 </div>
 
                 <div class="stats-section">
-                    <div class="revenue-total"></div>
-                    <div class="profit-net">Revenus total: 390.000 FCFA</div>
+                    <div class="revenue-total">Revenus total: 527.000 FCFA</div>
+                    <div class="profit-net">Bénéfices: +427.000 FCFA</div>
                 </div>
 
                 <button class="invest-button" id="btn5" onclick="investProduct(5, 100000)">
@@ -467,7 +435,7 @@
             </div>
         </div>
 
-        <!-- LIPTON 6 -->
+        <!-- VIP-5 -->
         <div class="investment-card" data-house-id="6">
             <div class="card-image"></div>
             <div class="status-badge">VIP-5</div>
@@ -482,17 +450,17 @@
 
                 <div class="info-row">
                     <i class="fas fa-chart-line info-icon"></i>
-                    <div class="info-text">Revenus quotidien: 55.000 FCFA</div>
+                    <div class="info-text">Revenus quotidien: 27.000 FCFA</div>
                 </div>
 
                 <div class="info-row">
                     <i class="fas fa-clock info-icon"></i>
-                    <div class="info-text">10 jours</div>
+                    <div class="info-text">Cycle: 31 jours</div>
                 </div>
 
                 <div class="stats-section">
-                    <div class="revenue-total"></div>
-                    <div class="profit-net">Revenus total: 550.000 FCFA</div>
+                    <div class="revenue-total">Revenus total: 837.000 FCFA</div>
+                    <div class="profit-net">Bénéfices: +637.000 FCFA</div>
                 </div>
 
                 <button class="invest-button" id="btn6" onclick="investProduct(6, 200000)">
@@ -507,7 +475,6 @@
         </div>
     </div>
 
-    <!-- Navigation AMÉLIORÉE -->
     <div class="navigation">
         <a href="accueil.html" class="nav-item active">
             <div class="nav-icon"><i class="fas fa-home"></i></div>
@@ -527,14 +494,11 @@
         </a>
     </div>
 
-    <!-- SCRIPT FIREBASE COMPLET -->
     <script type="module">
-        // Import des modules Firebase nécessaires
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
         import { getDatabase, ref, set, get, update, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
-        // Configuration Firebase Lipton
         const firebaseConfig = {
             apiKey: "AIzaSyC_el0Jffzw91JwWnvzIwYTOGk4MexLPik",
             authDomain: "lipton-4f24a.firebaseapp.com",
@@ -545,26 +509,22 @@
             appId: "1:1041905353994:web:cb3de8068c56cac54766f3"
         };
 
-        // Initialisation Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        // Variables globales
         let currentUser = null;
         let userBalance = 0;
 
-        // Configuration des produits
         const PRODUCT_CONFIG = {
-            1: { nom: "VIP-1", dailyRevenue: 1050, cycleDuration: 20, totalRevenue: 21000, price: 5500, limit: 1 },
-            2: { nom: "VIP-2", dailyRevenue: 2500, cycleDuration: 18, totalRevenue: 45000, price: 10500, limit: 2 },
-            3: { nom: "VIP-3", dailyRevenue: 5500, cycleDuration: 15, totalRevenue: 82500, price: 20500, limit: 3 },
-            4: { nom: "VIP-4", dailyRevenue: 26000, cycleDuration: 15, totalRevenue: 390000, price: 100000, limit: 4 },
-            5: { nom: "VIP-4", dailyRevenue: 26000, cycleDuration: 15, totalRevenue: 390000, price: 100000, limit: 5 },
-            6: { nom: "VIP-6", dailyRevenue: 55000, cycleDuration: 10, totalRevenue: 550000, price: 200000, limit: 6 }
+            1: { nom: "VIP-1", dailyRevenue: 1200, cycleDuration: 31, totalRevenue: 37200, price: 5000, limit: 1 },
+            2: { nom: "VIP-2", dailyRevenue: 2500, cycleDuration: 31, totalRevenue: 77500, price: 10000, limit: 2 },
+            3: { nom: "VIP-3", dailyRevenue: 5000, cycleDuration: 31, totalRevenue: 155000, price: 30000, limit: 3 },
+            4: { nom: "VIP-4", dailyRevenue: 17000, cycleDuration: 31, totalRevenue: 527000, price: 100000, limit: 4 },
+            5: { nom: "VIP-4", dailyRevenue: 17000, cycleDuration: 31, totalRevenue: 527000, price: 100000, limit: 5 },
+            6: { nom: "VIP-5", dailyRevenue: 27000, cycleDuration: 31, totalRevenue: 837000, price: 200000, limit: 6 }
         };
 
-        /* --------------------- NOTIFICATIONS --------------------- */
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             notification.textContent = message;
@@ -575,7 +535,6 @@
             }, 3000);
         }
 
-        /* --------------------- VÉRIFICATION INVESTISSEMENTS --------------------- */
         async function checkActiveInvestments(userId, productId) {
             try {
                 const investmentsRef = ref(db, `investments/${userId}`);
@@ -595,7 +554,6 @@
             }
         }
 
-        /* --------------------- MISE À JOUR LIMITES --------------------- */
         async function updateInvestmentLimits(userId) {
             try {
                 for (const productId in PRODUCT_CONFIG) {
@@ -626,7 +584,6 @@
             }
         }
 
-        /* --------------------- FONCTION INVESTIR --------------------- */
         window.investProduct = async function(productId, amount) {
             if (!currentUser) {
                 showNotification("Veuillez vous connecter pour investir", "error");
@@ -652,11 +609,9 @@
                     return;
                 }
 
-                // Débit du solde
                 const updates = {};
                 updates[`users/${currentUser.uid}/balance`] = userBalance - amount;
 
-                // Création investissement
                 const investmentsRef = ref(db, `investments/${currentUser.uid}`);
                 const newInvestmentRef = push(investmentsRef);
                 const currentDate = new Date();
@@ -693,7 +648,6 @@
             }
         };
 
-        /* --------------------- TRAITEMENT REVENUS --------------------- */
         async function processInvestmentRevenues() {
             if (!currentUser) return;
             
@@ -740,7 +694,6 @@
             }
         }
 
-        /* --------------------- AUTHENTIFICATION --------------------- */
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
@@ -762,7 +715,6 @@
             }
         });
 
-        /* --------------------- GESTION ERREURS --------------------- */
         window.addEventListener('error', (error) => {
             console.error('Erreur:', error);
             showNotification('Erreur inattendue', 'error');
